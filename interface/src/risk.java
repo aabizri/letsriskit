@@ -32,17 +32,4 @@ public class risk extends JFrame {
         }
         );
     }
-
-    private int x;
-    private int y;
-
-    public void init() {
-        addMouseListener(this);
-    }
-
-    public void mouseClicked(MouseEvent e){
-        x = e.getX();
-        y = e.getY();
-        System.out.println("("+ x + ";" + y + ")");
-    }
 }
