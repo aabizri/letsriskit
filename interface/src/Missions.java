@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class Missions {
 
-    public Missions(int numberOfPlayers){
+    public Missions(){
 
     }
 

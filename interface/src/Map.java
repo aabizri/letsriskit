@@ -11,10 +11,9 @@ public class Map extends JPanel {
     private Image world;
 
     public Map(){
-    initImageWorld();
     }
 
-    private void initImageWorld() {
+    public void initImageWorld() {
 
         loadImageWorld();
 

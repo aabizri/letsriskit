@@ -120,10 +120,11 @@ public class Board extends JPanel {
             buttonsNumberPlayers[i].addActionListener(e -> {
 
                 removeAll();
-                initWorld();
 
-                if (e.getActionCommand() == "2 joueurs"){
-                    System.out.println("nice");
+                if (e.getActionCommand().equals("2 joueurs")){
+                    Player player = new Player();
+                    add(player.addPlayerName(2));
+                    player.addPlayerName(2).setVisible(true);
                 }
 
             });

@@ -5,6 +5,8 @@ import javax.swing.*;
 
 public class risk extends JFrame {
 
+    //Le menu
+    private JPanel menu = new JPanel();
 
     public risk(){
 
@@ -13,7 +15,9 @@ public class risk extends JFrame {
 
     private void initUI() {
 
-        add(new Board());
+        menu.add(new Board());
+        menu.setVisible(true);
+        add(menu);
 
         pack();
 
