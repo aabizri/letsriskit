@@ -1,23 +1,35 @@
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Game {
-    // The regions used in the game
-    private Collection<Region> regions;
+    // The board
+    private Board board;
 
-    // Players
-    private List<Player> players;
+    // Players playing the game
+    private Map<Player, Mission> players;
 
-    // Unit Types
+    // Unit Types in use
     private Collection<UnitType> unitTypes;
 
-    // Unit registry
-    public UnitRegistry unitRegistry = new UnitRegistry();
-
-    public Game(Collection<Region> regions, List<Player> players, Collection<UnitType> unitTypes) {
-        this.regions = regions;
-        this.players = players;
+    public Game(Board board, List<Player> players, Collection<UnitType> unitTypes) {
+        this.board = board;
+        this.players = new HashMap<>(players.size());
+        players.forEach(p -> this.players.put(p, null));
         this.unitTypes = unitTypes;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public Map<Player, Mission> getPlayers() {
+        return players;
+    }
+
+    public Collection<UnitType> getUnitTypes() {
+        return unitTypes;
     }
 }
 
