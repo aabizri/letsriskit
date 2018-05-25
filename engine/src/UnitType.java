@@ -1,8 +1,7 @@
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.IntStream;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.stream.*;
 
 public class UnitType {
     public static UnitType soldier = new UnitType("Soldier", 1, 1, 6, 2, 1, 2);
@@ -53,14 +52,6 @@ public class UnitType {
         this.moves = moves;
     }
 
-    public ByteArrayOutputStream marshalJSON() {
-
-    }
-
-    public void unmarshalJSON(ByteArrayInputStream) {
-
-    }
-
     /**
      * spawns a Unit of this type that hasn't been placed on a territory yet
      *
@@ -80,8 +71,40 @@ public class UnitType {
      * @return
      */
     public Collection<Unit> spawn(Player owner, int quantity) {
-        ArrayList<Unit> ul = new ArrayList<>(quantity);
-        IntStream.range(0,quantity).mapToObj(i -> ul.set(i,this.spawn(owner))).close();
-        return ul;
+        return unitStream(owner).limit((long) quantity).collect(Collectors.toList());
+    }
+
+    /**
+     * generates a spawning stream for units, given a specific Player
+     *
+     * @param owner
+     * @return
+     */
+    public Stream<Unit> unitStream(Player owner) {
+        UnitType ut = this;
+        class unitSpliterator implements Spliterator<Unit> {
+            @Override
+            public int characteristics() {
+                return CONCURRENT | DISTINCT | NONNULL;
+            }
+
+            @Override
+            public long estimateSize() {
+                return Long.MAX_VALUE;
+            }
+
+            @Override
+            public boolean tryAdvance(Consumer<? super Unit> consumer) {
+                Unit u = ut.spawn(owner);
+                consumer.accept(u);
+                return true;
+            }
+
+            @Override
+            public Spliterator<Unit> trySplit() {
+                return new unitSpliterator();
+            }
+        }
+        return StreamSupport.stream(new unitSpliterator(), false);
     }
 }
