@@ -22,6 +22,8 @@ public class UnitSelection implements Movable, Collection<Unit> {
     }
 
     public UnitSelection(Game game, List<Unit> selection) throws Exception {
+        if (selection.size() == 0) return ;
+
         // Check that they are all on the same territory !
         if (selection.stream().anyMatch(u -> u != selection.get(0))) {
             throw new Exception("Not all units are on the same territory");
