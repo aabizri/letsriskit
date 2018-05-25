@@ -53,11 +53,27 @@ public class UnitType {
         this.moves = moves;
     }
 
+    /**
+     * JSON format:
+     *
+     * {
+     *     "name": ?;
+     *     "cost": ?;
+     *     "min-power": ?;
+     *     "max-power": ?;
+     *     "attack-priority": ?:
+     *     "defense-priority": ?:
+     *     "moves": ?:
+     * }
+     *
+     * @return
+     */
     public ByteArrayOutputStream marshalJSON() {
-
+        // TODO
+        return null;
     }
 
-    public void unmarshalJSON(ByteArrayInputStream) {
+    public void unmarshalJSON(ByteArrayInputStream input) {
 
     }
 
