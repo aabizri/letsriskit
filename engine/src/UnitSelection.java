@@ -1,8 +1,10 @@
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/**
+ * Thread-safe IF listed units aren't manipulated directly
+ */
 public class UnitSelection implements Movable, Collection<Unit> {
     @NotNull private final Game game;
 
@@ -40,7 +42,7 @@ public class UnitSelection implements Movable, Collection<Unit> {
         return currentTerritory.getOwner().get();
     }
 
-    private void setUnitsCurrentTerritory(@NotNull Territory dst) {
+    private synchronized void setUnitsCurrentTerritory(@NotNull Territory dst) {
         this.selection.forEach(u -> u.setCurrentTerritory(dst));
     }
 
@@ -119,6 +121,15 @@ public class UnitSelection implements Movable, Collection<Unit> {
         }
 
         this.setUnitsCurrentTerritory(dst);
+    }
+
+    /**
+     * Remove all dead units from selection
+     */
+    public synchronized void prune() {
+        this.selection.stream()
+        .filter(Unit::isKilled)
+        .forEach(this.selection::remove);
     }
 
     @Override
