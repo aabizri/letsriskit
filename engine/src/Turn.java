@@ -1,4 +1,5 @@
 public class Turn {
+    private Game game;
     private int turnNumber;
     private Turn previousTurn;
     private Player player;
