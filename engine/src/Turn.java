@@ -6,7 +6,7 @@ public class Turn {
     private Board board;
 
     public ReinforcementsInteraction getReinforcements() {
-        return new ReinforcementsInteraction(game, player, game.unitTypes, ReinforcementsInteraction.calculateUnitQuantity(player,board,previousTurn));
+        return new ReinforcementsInteraction(game, player, game.getUnitTypes(), ReinforcementsInteraction.calculateUnitQuantity(player,board,previousTurn));
     }
 
     public int capturedTerritories() {

@@ -28,7 +28,7 @@ public class ReinforcementsInteraction {
         return unitsFromTerritories+unitsFromRegions+unitsFromCapture;
     }
 
-    public ReinforcementsInteraction(Game game, Player owner, List<UnitType> unitTypeList, int unitQuantity) {
+    public ReinforcementsInteraction(Game game, Player owner, Collection<UnitType> unitTypeList, int unitQuantity) {
         this.player = owner;
 
         this.distribution = new HashMap<>(unitTypeList.size());
