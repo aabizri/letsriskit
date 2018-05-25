@@ -1,8 +1,14 @@
-public class TurnBasedEvent extends Event {
-    protected int turnNumber;
+import org.jetbrains.annotations.NotNull;
 
-    public TurnBasedEvent(String eventType, String message, int turnNumber) {
+public class TurnBasedEvent extends Event {
+    private final int turnNumber;
+
+    public TurnBasedEvent(@NotNull String eventType, @NotNull String message, int turnNumber) {
         super(eventType,message);
         this.turnNumber = turnNumber;
+    }
+
+    public final int getTurnNumber() {
+        return turnNumber;
     }
 }

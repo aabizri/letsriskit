@@ -1,24 +1,34 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 
+/**
+ * Thread-safe (because of ReadWrite lock implementation)
+ */
 public class Dispatcher {
-    private ReadWriteLock rwlock = new ReentrantReadWriteLock();
-    private Lock rlock = rwlock.readLock();
-    private Lock wlock = rwlock.writeLock();
+    @NotNull private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
+    @NotNull private final Lock rlock = rwlock.readLock();
+    @NotNull private final Lock wlock = rwlock.writeLock();
 
-    private Map<String,Collection<Consumer<Event>>> table = new HashMap<>();
+    @NotNull private final Map<
+            @NotNull String,
+            @NotNull Collection
+                    <@NotNull Consumer
+                            <@NotNull Event>>>
+            table = new HashMap<>();
 
-    public void listen(String eventType, Consumer<Event> listener) {
-        Collection<Consumer<Event>> listeners = getListeners(eventType);
+    public void listen(@NotNull String eventType, @NotNull Consumer<@NotNull Event> listener) {
+        assert(eventType != null); assert(listener != null);
 
         wlock.lock();
-        if (listeners.size() == 0) {
+        @Nullable Collection<@NotNull Consumer<@NotNull Event>> listeners = this.table.get(eventType);
+
+        if (listeners == null) {
             listeners = new ArrayList<>();
             table.put(eventType,listeners);
         }
@@ -27,18 +37,28 @@ public class Dispatcher {
         wlock.unlock();
     }
 
-    public void dispatch(Event e) {
-        Collection<Consumer<Event>> listeners = this.getListeners(e);
-        if (listeners.size() != 0) {
-            listeners.forEach(l -> l.accept(e));
+    public void dispatch(@NotNull Event e) {
+        assert(e != null);
+
+        final @NotNull Optional<@NotNull Collection<@NotNull Consumer<@NotNull Event>>> listeners = this.getListeners(e);
+        if (listeners.isPresent() && !listeners.get().isEmpty()) {
+            listeners.get().forEach(l -> l.accept(e));
         }
     }
 
-    private Collection<Consumer<Event>> getListeners(Event e) {return this.getListeners(e.getType());}
-    private Collection<Consumer<Event>> getListeners(String eventType) {
+    private @NotNull Optional<@NotNull Collection<@NotNull Consumer<@NotNull Event>>> getListeners(@NotNull Event e) {
+        assert(e != null);
+
+        return this.getListeners(e.getType());
+    }
+
+    private @NotNull Optional<@NotNull Collection<@NotNull Consumer<@NotNull Event>>> getListeners(@NotNull String eventType) {
+        assert(eventType != null);
+
         rlock.lock();
-        Collection<Consumer<Event>> res = this.table.get(eventType);
+        @Nullable final Collection<Consumer<Event>> res = this.table.get(eventType);
         rlock.unlock();
-        return res;
+
+        return Optional.ofNullable(res);
     }
 }
