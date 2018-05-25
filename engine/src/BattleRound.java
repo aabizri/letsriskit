@@ -15,7 +15,7 @@ public class BattleRound {
         if (this.attackingParty.size() > BattleRound.MAX_ATTACKING_PARTY_SIZE) {
             throw new Exception("Attacking Party Size exceeds maximum !");
         }
-        if (game.unitRegistry.findByTerritory(this.attackingParty.getCurrentTerritory()).size() == 0) {
+        if (game.getBoard().getUnits().findByTerritory(this.attackingParty.getCurrentTerritory()).size() == 0) {
             throw new Exception("When attacking, at least 1 unit should stay in the territory from which originates the attack");
         }
         this.attackingParty = attackingParty;
@@ -36,7 +36,8 @@ public class BattleRound {
      */
     public UnitSelection pickDefendingParty() throws Exception {
         List<Unit> selectedUnits = game.
-                unitRegistry.
+                getBoard().
+                getUnits().
                 findByTerritory(defendingTerritory).
                 stream().
                 sorted(
