@@ -1,13 +1,14 @@
 public class Turn {
-    private int turn;
+    private int turnNumber;
+    private Turn previousTurn;
+    private Player player;
     private Board board;
 
-    public ReinforcementsDialogue getReinforcements() {
-        int unitsFromTerritories = floor(controlledTerritories.count()/3); // floor(T/3)
-        int unitsFromRegions = 0;
-        for (Region region : controlledRegions) {
-            unitsFromRegions += floor(region.territories.count()/2); // floor(N/2)
-        }
-        int unitsFromCapture = round(rand(1))*; // 50% that you get one from a captured territory
+    public ReinforcementsInteraction getReinforcements() {
+        return new ReinforcementsInteraction(game, player, game.unitTypes, ReinforcementsInteraction.calculateUnitQuantity(player,board,previousTurn));
+    }
+
+    public int capturedTerritories() {
+        return 0; //TODO: Return how much territories were captured in that turn
     }
 }
