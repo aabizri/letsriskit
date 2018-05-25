@@ -1,12 +1,19 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Map;
 
+/**
+ * Immutable, and as such thread-safe
+ */
 public class Rolls {
-    private Map<Unit, Integer> attackers;
-    private Map<Unit, Integer> defenders;
+    @NotNull private final Map<@NotNull Unit, @NotNull Integer> attackers;
+    @NotNull private final Map<@NotNull Unit, @NotNull Integer> defenders;
 
-    public Rolls(Random rand, UnitSelection attackingParty, UnitSelection defendingParty) {
+    public Rolls(@NotNull Random rand, @NotNull UnitSelection attackingParty, @NotNull UnitSelection defendingParty) {
+        assert(rand != null); assert(attackingParty != null); assert(defendingParty != null);
+
         this.attackers = new HashMap<>(attackingParty.size());
         this.defenders = new HashMap<>(defendingParty.size());
 
@@ -14,15 +21,18 @@ public class Rolls {
         defendingParty.forEach(u -> defenders.put(u, Rolls.rollDice(rand,u.getType())));
     }
 
-    public Map<Unit, Integer> getAttackerRolls() {
+    @NotNull
+    public Map<@NotNull Unit, @NotNull Integer> getAttackerRolls() {
         return new HashMap<>(attackers);
     }
 
-    public Map<Unit, Integer> getDefenderRolls() {
+    @NotNull
+    public Map<@NotNull Unit, @NotNull Integer> getDefenderRolls() {
         return new HashMap<>(defenders);
     }
 
-    private static int rollDice(Random rand, UnitType ut) {
+    private static int rollDice(@NotNull Random rand, @NotNull UnitType ut) {
+        assert(rand != null); assert(ut != null);
         return ut.getMinPower() + rand.nextInt(ut.getMaxPower() + 1);
     }
 }
