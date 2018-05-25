@@ -1,4 +1,4 @@
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,12 +10,12 @@ import java.util.List;
  * Should be thread-safe, as long as the Attacking Units aren't altered and the defending territory not changed
  */
 public class Battle {
-    private final Game game;
+    @NotNull private final Game game;
 
-    private final List<BattleRound> rounds = new ArrayList<>(1);
+    @NotNull private final List<@NotNull BattleRound> rounds = new ArrayList<>(1);
 
-    private final UnitSelection attackingParty;
-    private final Territory defendingTerritory;
+    @NotNull private final UnitSelection attackingParty;
+    @NotNull private final Territory defendingTerritory;
 
     public Battle(
             @NotNull final Game game,
@@ -23,6 +23,7 @@ public class Battle {
             @NotNull final Territory defendingTerritory)
             throws Exception
     {
+        assert(game != null); assert(attackingParty != null); assert(defendingTerritory != null);
 
         if (game.unitRegistry.findByTerritory(attackingParty.getCurrentTerritory()).size() == 0) {
             throw new Exception("When attacking, at least 1 unit should stay in the territory from which originates the attack");
@@ -33,7 +34,7 @@ public class Battle {
     }
 
     @NotNull
-    public List<BattleRound> getRounds() {
+    public List<@NotNull BattleRound> getRounds() {
         return new ArrayList<>(this.rounds);
     }
 
@@ -77,8 +78,8 @@ public class Battle {
     }
 
     @NotNull
-    public Collection<BattleRoundReport> blitz() throws Exception {
-        Collection<BattleRoundReport> reports = new ArrayList<>(1);
+    public Collection<@NotNull BattleRoundReport> blitz() throws Exception {
+        Collection<@NotNull BattleRoundReport> reports = new ArrayList<>(1);
         while (hasNextRound()) {
             reports.add(blitzNextRound());
         }

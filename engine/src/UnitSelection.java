@@ -1,29 +1,16 @@
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class UnitSelection implements Movable, Collection<Unit> {
-    @NotNull private Game game;
+    @NotNull private final Game game;
 
-    @NotNull private List<Unit> selection;
+    @NotNull private final List<Unit> selection;
 
-    @Nullable private Territory currentTerritory;
+    @NotNull private Territory currentTerritory;
 
-    public Territory getCurrentTerritory() {
-        return currentTerritory;
-    }
-
-    public Player getOwner() {
-        assert(currentTerritory.getOwner().isPresent());
-        return currentTerritory.getOwner().get();
-    }
-
-    private void setUnitsCurrentTerritory(Territory dst) {
-        this.selection.forEach(u -> u.setCurrentTerritory(dst));
-    }
-
-    public UnitSelection(@NotNull Game game, @NotNull List<Unit> selection) throws Exception {
+    public UnitSelection(@NotNull Game game, @NotNull List<@NotNull Unit> selection) throws Exception {
         assert(game != null);
         assert(selection != null);
 
@@ -40,6 +27,21 @@ public class UnitSelection implements Movable, Collection<Unit> {
         currentTerritory = selection.get(0).getCurrentTerritory();
         this.selection = selection;
         this.game = game;
+    }
+
+    @NotNull
+    public Territory getCurrentTerritory() {
+        return currentTerritory;
+    }
+
+    @NotNull
+    public Player getOwner() {
+        assert(currentTerritory.getOwner().isPresent());
+        return currentTerritory.getOwner().get();
+    }
+
+    private void setUnitsCurrentTerritory(@NotNull Territory dst) {
+        this.selection.forEach(u -> u.setCurrentTerritory(dst));
     }
 
     /**
@@ -74,6 +76,7 @@ public class UnitSelection implements Movable, Collection<Unit> {
      *
      * The Battle created in case of hostile territory is played through, which means that it may fail and thus the forceMove may not be applied
      */
+    @NotNull
     public Optional<Battle> forceMove(@NotNull Territory dst) throws Exception {
         assert(dst != null);
 
@@ -95,6 +98,7 @@ public class UnitSelection implements Movable, Collection<Unit> {
         return ob;
     }
 
+    @NotNull
     public Battle attack(@NotNull Territory dst) throws Exception {
         assert(dst != null);
 
