@@ -6,7 +6,7 @@ public class Board {
     private UnitRegistry units;
 
     public void register(Unit u) {
-        units.register(u);
+        units.add(u);
     }
 
     public Collection<Region> getRegions() {
