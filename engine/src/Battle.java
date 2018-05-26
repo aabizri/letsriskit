@@ -25,7 +25,7 @@ public class Battle {
     {
         assert(game != null); assert(attackingParty != null); assert(defendingTerritory != null);
 
-        if (game.unitRegistry.findByTerritory(attackingParty.getCurrentTerritory()).size() == 0) {
+        if (game.getBoard().getUnits().findByTerritory(attackingParty.getCurrentTerritory()).size() == 0) {
             throw new Exception("When attacking, at least 1 unit should stay in the territory from which originates the attack");
         }
         this.attackingParty = attackingParty;
