@@ -1,5 +1,8 @@
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 import java.util.Collection;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -66,6 +69,30 @@ public class UnitType {
 
         assert(moves >= 0);
         this.moves = moves;
+    }
+
+    /**
+     * JSON format:
+     *
+     * {
+     *     "name": ?;
+     *     "cost": ?;
+     *     "min-power": ?;
+     *     "max-power": ?;
+     *     "attack-priority": ?:
+     *     "defense-priority": ?:
+     *     "moves": ?:
+     * }
+     *
+     * @return
+     */
+    public ByteArrayOutputStream marshalJSON() {
+        // TODO
+        return null;
+    }
+
+    public void unmarshalJSON(ByteArrayInputStream input) {
+
     }
 
     /**
