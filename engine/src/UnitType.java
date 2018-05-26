@@ -1,14 +1,19 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.*;
 
+/**
+ * Immutable, and as such thread-safe
+ */
 public class UnitType {
-    public static UnitType soldier = new UnitType("Soldier", 1, 1, 6, 2, 1, 2);
-    public static UnitType rider = new UnitType("Rider", 3, 2, 7, 1, 3, 3);
-    public static UnitType canon = new UnitType("Canon", 7, 4, 9, 3, 2,1);
+    public final static UnitType soldier = new UnitType("Soldier", 1, 1, 6, 2, 1, 2);
+    public final static UnitType rider = new UnitType("Rider", 3, 2, 7, 1, 3, 3);
+    public final static UnitType canon = new UnitType("Canon", 7, 4, 9, 3, 2,1);
 
-    private String name;
+    private @NotNull String name;
     private int cost;
     private int minPower;
     private int maxPower;
@@ -16,7 +21,7 @@ public class UnitType {
     private int defensePriority;
     private int moves;
 
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
@@ -42,13 +47,24 @@ public class UnitType {
 
     public int getMoves() { return moves; }
 
-    public UnitType(String name, int cost, int minPower, int maxPower, int attackPriority, int defensePriority, int moves) {
+    public UnitType(@NotNull String name, int cost, int minPower, int maxPower, int attackPriority, int defensePriority, int moves) {
+        assert(name != null);
         this.name = name;
+
+        assert(cost > 0);
         this.cost = cost;
+
+        assert(minPower >= 0 && minPower < maxPower);
         this.minPower = minPower;
         this.maxPower = maxPower;
+
+        assert(attackPriority >= 0);
         this.attackPriority = attackPriority;
+
+        assert(defensePriority >= 0);
         this.defensePriority = defensePriority;
+
+        assert(moves >= 0);
         this.moves = moves;
     }
 
@@ -58,9 +74,10 @@ public class UnitType {
      * @param owner
      * @return
      */
-    public Unit spawn(Player owner) {
-        Unit u = new Unit(this, owner);
-        return u;
+    @NotNull
+    public Unit spawn(@NotNull Player owner) {
+        assert(owner != null);
+        return new Unit(this, owner);
     }
 
     /**
@@ -70,7 +87,8 @@ public class UnitType {
      * @param quantity
      * @return
      */
-    public Collection<Unit> spawn(Player owner, int quantity) {
+    public @NotNull Collection<@NotNull Unit> spawn(@NotNull Player owner, int quantity) {
+        assert(owner != null);
         return unitStream(owner).limit((long) quantity).collect(Collectors.toList());
     }
 
@@ -80,7 +98,9 @@ public class UnitType {
      * @param owner
      * @return
      */
-    public Stream<Unit> unitStream(Player owner) {
+    public @NotNull Stream<@NotNull Unit> unitStream(@NotNull Player owner) {
+        assert(owner != null);
+
         UnitType ut = this;
         class unitSpliterator implements Spliterator<Unit> {
             @Override
@@ -101,7 +121,7 @@ public class UnitType {
             }
 
             @Override
-            public Spliterator<Unit> trySplit() {
+            public @NotNull Spliterator<@NotNull Unit> trySplit() {
                 return new unitSpliterator();
             }
         }
