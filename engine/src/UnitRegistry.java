@@ -1,3 +1,6 @@
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -5,106 +8,122 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Thread-safe (should be)
+ */
 public class UnitRegistry implements Collection<Unit> {
-    private Collection<Unit> unitList = new ArrayList<>();
+    private final @NotNull Collection<@NotNull Unit> unitList = new ArrayList<>();
 
-    public void register(Unit u) {
-        this.unitList.add(u);
+    public Stream<Unit> intercept(@NotNull Stream<@NotNull Unit> su) {
+        assert(su != null);
+        return su.peek(this::add);
     }
-    public Stream<Unit> intercept(Stream<Unit> su) {return su.peek(this::register);}
 
-    public static Predicate<Unit> isFromTerritoryPredicate(Territory t) {
+    @Contract(pure = true)
+    public static @NotNull Predicate<@NotNull Unit> isFromTerritoryPredicate(@NotNull Territory t) {
+        assert(t != null);
         return u -> t.equals(u.getCurrentTerritory());
     }
 
-    public static Predicate<Unit> isFromRegionPredicate(Region r) {
+    @Contract(pure = true)
+    public static @NotNull Predicate<@NotNull Unit> isFromRegionPredicate(@NotNull Region r) {
+        assert(r != null);
         return u -> r.equals(u.getCurrentTerritory().getRegion());
     }
 
-    public static Predicate<Unit> isOwnedByPredicate(Player o) {
+    @Contract(pure = true)
+    public static @NotNull Predicate<@NotNull Unit> isOwnedByPredicate(@NotNull Player o) {
+        assert(o != null);
         return u -> o.equals(u.getOwner());
     }
 
-    public Collection<Unit> findByTerritory(Territory t) {
+    public synchronized @NotNull Collection<@NotNull Unit> findByTerritory(@NotNull Territory t) {
+        assert(t != null);
+
         return this.unitList.stream().filter(
                 isFromTerritoryPredicate(t)
         ).collect(Collectors.toList());
     }
 
-    public Collection<Unit> findByRegion(Region r) {
-        return this.unitList.stream().filter(
+    public synchronized @NotNull Collection<Unit> findByRegion(@NotNull Region r) {
+        assert(r != null);
+
+        return this.stream().filter(
                 isFromRegionPredicate(r)
         ).collect(Collectors.toList());
     }
 
-    public Collection<Unit> findByOwner(Player o) {
-        return this.unitList.stream().filter(
+    public synchronized @NotNull Collection<Unit> findByOwner(@NotNull Player o) {
+        assert(o != null);
+
+        return this.stream().filter(
                 isOwnedByPredicate(o)
         ).collect(Collectors.toList());
     }
 
     @Override
-    public int size() {
+    public synchronized int size() {
         return this.unitList.size();
     }
 
     @Override
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return this.unitList.isEmpty();
     }
 
     @Override
-    public boolean contains(Object o) {
+    public synchronized boolean contains(Object o) {
         return this.unitList.contains(o);
     }
 
-    @Override
-    public Iterator<Unit> iterator() {
+    @Override @NotNull
+    public synchronized Iterator<Unit> iterator() {
         return this.unitList.iterator();
     }
 
-    @Override
-    public Object[] toArray() {
+    @Override @NotNull
+    public synchronized Object[] toArray() {
         return this.unitList.toArray();
     }
 
-    @Override
-    public <T> T[] toArray(T[] ts) {
+    @Override @NotNull
+    public synchronized <T> T[] toArray(@NotNull T[] ts) {
         return this.unitList.toArray(ts);
     }
 
     @Override
-    public boolean add(Unit unit) {
+    public synchronized boolean add(@NotNull Unit unit) {
+        assert(unit != null);
         return this.unitList.add(unit);
     }
 
     @Override
-    public boolean remove(Object o) {
+    public synchronized boolean remove(Object o) {
         return this.unitList.remove(o);
     }
 
     @Override
-    public boolean containsAll(Collection<?> collection) {
+    public synchronized boolean containsAll(Collection<?> collection) {
         return this.unitList.containsAll(collection);
     }
 
     @Override
-    public boolean addAll(Collection<? extends Unit> collection) {
+    public synchronized boolean addAll(Collection<? extends Unit> collection) {
         return this.unitList.addAll(collection);
     }
 
     @Override
-    public boolean removeAll(Collection<?> collection) {
+    public synchronized boolean removeAll(Collection<?> collection) {
         return this.unitList.removeAll(collection);
     }
 
     @Override
-    public boolean retainAll(Collection<?> collection) {
+    public synchronized boolean retainAll(Collection<?> collection) {
         return this.unitList.retainAll(collection);
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
         this.unitList.clear();
     }
 }
