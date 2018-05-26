@@ -1,7 +1,11 @@
 import java.util.*;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+/**
+ * Should be thread-safe
+ */
 public class BattleRound {
     private Game game;
 
@@ -10,6 +14,9 @@ public class BattleRound {
 
     private UnitSelection attackingParty;
     private Territory defendingTerritory;
+
+    private AtomicBoolean committed = new AtomicBoolean(false);
+    private BattleRoundReport report = null;
 
     public BattleRound(Game game, UnitSelection attackingParty, Territory defendingTerritory) throws Exception {
         if (this.attackingParty.size() > BattleRound.MAX_ATTACKING_PARTY_SIZE) {
@@ -52,13 +59,7 @@ public class BattleRound {
         return new Rolls(new Random(), attackingParty, this.pickDefendingParty());
     }
 
-    /**
-     * Engage executes the battle round, returning the rolls and killing the units defeated
-     *
-     * @return BattleRoundReport a report of the battle round casualties & rolls
-     */
-    public BattleRoundReport engage() throws Exception {
-        Rolls r = this.roll();
+    public BattleRoundReport engage(Rolls r) throws Exception {
         Map<Unit, Integer> attackerRolls = r.getAttackerRolls();
         Map<Unit, Integer> defenderRolls = r.getDefenderRolls();
 
@@ -91,6 +92,58 @@ public class BattleRound {
             defendersCasualties.put(defenderEntryWithMaxRoll.getKey(), !attackerWins);
         }
 
-        return new BattleRoundReport(r,attackersCasualties,defendersCasualties);
+        return new BattleRoundReport(this,r,attackersCasualties,defendersCasualties);
+    }
+
+    /**
+     * Engage executes the battle round, returning the report
+     *
+     * WARNING : the results are NOT committed automatically, one needs to manually execute BattleRoundReport.commit()
+     * Or use the other form blitz;
+     *
+     * @return BattleRoundReport a report of the battle round casualties & rolls
+     */
+    public BattleRoundReport engage() throws Exception {
+        Rolls r = this.roll();
+        return this.engage(r);
+    }
+
+    /**
+     * Engages using engage() and commits using BattleRoundReport.commit()
+     *
+     * @return
+     * @throws Exception
+     */
+    public BattleRoundReport blitz() throws Exception {
+        BattleRoundReport report = this.engage();
+        report.commit();
+        return report;
+    }
+
+    /**
+     * @return true if it wasn't committed before and has been successfully marked as committed
+     */
+    public boolean commit(BattleRoundReport report) {
+        boolean ok = this.committed.compareAndSet(false,true);
+        if (!ok) return false;
+
+        this.report = report;
+        return true;
+    }
+
+    /**
+     * Returns report if it has been committed
+     *
+     * @return
+     */
+    public Optional<BattleRoundReport> getReport() {
+        return Optional.ofNullable(this.report);
+    }
+
+    /**
+     * @return true if the BattleRound has been committed
+     */
+    public boolean hasBeenCommitted() {
+        return this.committed.get();
     }
 }
