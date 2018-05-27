@@ -37,6 +37,16 @@ public class DefaultBattle implements Battle {
     }
 
     @NotNull
+    public UnitSelection getAttackingParty() {
+        return this.attackingParty;
+    }
+
+    @NotNull
+    public Territory getDefendingTerritory() {
+        return this.defendingTerritory;
+    }
+
+    @NotNull
     public List<@NotNull BattleRound> getRounds() {
         return new ArrayList<>(this.rounds);
     }

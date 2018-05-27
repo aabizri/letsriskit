@@ -12,6 +12,12 @@ import java.util.Optional;
 public interface Battle {
 
     @NotNull
+    UnitSelection getAttackingParty();
+
+    @NotNull
+    Territory getDefendingTerritory();
+
+    @NotNull
     List<@NotNull BattleRound> getRounds();
 
     boolean hasNextRound();
