@@ -42,11 +42,11 @@ public class Unit implements Movable {
 
     public void decrementMovesLeft() {this.moveCounter--;}
 
-    // forceMove to adjacent territory only
+    // move to adjacent territory only
     // WARNING: no battle here, battles  managed on the UnitSelection level
     public void move(Territory dst) throws Exception {
         if (!canMove(dst)) {
-            throw new Exception("Cannot forceMove");
+            throw new Exception("Cannot move");
         }
 
         this.setCurrentTerritory(dst);

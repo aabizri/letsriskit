@@ -64,6 +64,8 @@ public class ReinforcementsInteraction {
 
     /**
      * Upgrade procedure: convert some soldiers for some other units
+     *
+     * TODO: Specify the Exception
      */
     public void upgrade(UnitType recruitType, int quantity) throws Exception {
         int transactionCost = recruitType.getCost() * quantity;
@@ -84,6 +86,8 @@ public class ReinforcementsInteraction {
 
     /**
      * Downgrade procedure: convert some unit type to soldier
+     *
+     * TODO: Specify the Exception
      */
     public void downgrade(UnitType recruitType, int quantity) throws Exception {
         int unitsOfThatType = this.distribution.get(recruitType);
@@ -100,13 +104,12 @@ public class ReinforcementsInteraction {
         int preExistingSoldiers = this.distribution.get(UnitType.soldier);
         int newSoldiers = recruitType.getCost() * quantity;
         this.distribution.replace(UnitType.soldier, preExistingSoldiers + newSoldiers);
-
     }
 
     /**
      *  Transform all the reinforcements to a single UnitSelection, ready to be placed
      */
-    public UnitSelection transform() throws Exception {
+    public UnitSelection transform() throws CantSelectException {
         List<Unit> units = new ArrayList<>();
         distribution.forEach( (ut, q) ->
             units.addAll(
@@ -119,6 +122,8 @@ public class ReinforcementsInteraction {
 
     /**
      * Transform the given subselection to a UnitSelection
+     *
+     * TODO: Specify the Exception launched
      */
     public UnitSelection transform(Map<UnitType,Integer> subselection) throws Exception {
         List<Unit> units = new ArrayList<>();

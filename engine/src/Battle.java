@@ -1,71 +1,26 @@
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Battle class is a model of a battle in multiple rounds (see BattleRound).
+ * Battle is a model of a battle in multiple rounds (see BattleRound).
  *
  * Should be thread-safe, as long as the Attacking Units aren't altered and the defending territory not changed
  */
-public class Battle {
-    @NotNull private final Game game;
-
-    @NotNull private final List<@NotNull BattleRound> rounds = new ArrayList<>(1);
-
-    @NotNull private final UnitSelection attackingParty;
-    @NotNull private final Territory defendingTerritory;
-
-    public Battle(
-            @NotNull final Game game,
-            @NotNull final UnitSelection attackingParty,
-            @NotNull final Territory defendingTerritory)
-            throws Exception
-    {
-        assert(game != null); assert(attackingParty != null); assert(defendingTerritory != null);
-
-        if (game.getBoard().getUnits().findByTerritory(attackingParty.getCurrentTerritory()).size() == 0) {
-            throw new Exception("When attacking, at least 1 unit should stay in the territory from which originates the attack");
-        }
-        this.attackingParty = attackingParty;
-        this.defendingTerritory = defendingTerritory;
-        this.game = game;
-    }
+public interface Battle {
 
     @NotNull
-    public List<@NotNull BattleRound> getRounds() {
-        return new ArrayList<>(this.rounds);
-    }
+    List<@NotNull BattleRound> getRounds();
 
-    public boolean hasNextRound() {
-        return (this.rounds.size() == 0
-                || (this.rounds.get(this.rounds.size()-1).hasBeenCommitted() && !this.rounds.get(this.rounds.size()-1).getReport().get().isAttackerVictorious()))
-                && defendingTerritory.getOwner().isPresent()
-                && !defendingTerritory.getOwner().get().equals(attackingParty.getOwner())
-                && !attackingParty.getCurrentTerritory().equals(defendingTerritory)
-                && attackingParty.getCurrentTerritory().calculateIsNeighbour(defendingTerritory)
-                && attackingParty.size() > 0;
-    }
+    boolean hasNextRound();
 
     /**
      * Generates and returns the next BattleRound to be played
-     *
-     * Note: synchronized so as to have only one BattleRound be played at a time (duh)
-     *
-     * @return
-     * @throws Exception
      */
     @NotNull
-    public synchronized BattleRound nextRound() throws Exception {
-        if (!hasNextRound()) {
-            throw new Exception("No next round possible");
-        }
-
-        BattleRound nextRound = new BattleRound(game, attackingParty, defendingTerritory);
-        this.rounds.add(nextRound);
-        return nextRound;
-    }
+    Optional<BattleRound> nextRound();
 
     /**
      * speeds-play the next round and commit the results
@@ -73,22 +28,31 @@ public class Battle {
      * @return the report of the round
      */
     @NotNull
-    public BattleRoundReport blitzNextRound() throws Exception {
-        return this.nextRound().blitz();
+    default Optional<BattleRoundReport> blitzNextRound() {
+        Optional<BattleRound> nextRound = this.nextRound();
+        if (!nextRound.isPresent()) {
+            return Optional.empty();
+        }
+
+        return nextRound.get().getReport();
     }
 
     @NotNull
-    public Collection<@NotNull BattleRoundReport> blitz() throws Exception {
-        Collection<@NotNull BattleRoundReport> reports = new ArrayList<>(1);
+    default List<@NotNull BattleRoundReport> blitz() {
+        List<@NotNull BattleRoundReport> reports = new ArrayList<>(1);
         while (hasNextRound()) {
-            reports.add(blitzNextRound());
+            Optional<BattleRoundReport> report = this.blitzNextRound();
+            if (!report.isPresent()) {
+                break; // This means we're in a race
+            }
         }
         return reports;
     }
 
-    public boolean isAttackerVictorious() {
-        return this.rounds.size() != 0
-                && this.rounds.get(this.rounds.size()-1).getReport().isPresent()
-                && this.rounds.get(this.rounds.size()-1).getReport().get().isAttackerVictorious();
+    default boolean isAttackerVictorious() {
+        List<BattleRound> rounds = this.getRounds();
+        return rounds.size() != 0
+                && rounds.get(rounds.size() - 1).getReport().isPresent()
+                && rounds.get(rounds.size() - 1).getReport().get().isAttackerVictorious();
     }
 }
