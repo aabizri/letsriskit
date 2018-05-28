@@ -1,6 +1,6 @@
 import org.jetbrains.annotations.NotNull;
 
-public class UnstructuredEvent {
+public class UnstructuredEvent implements Event {
     @NotNull
     private final String type;
     @NotNull
