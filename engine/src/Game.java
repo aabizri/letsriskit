@@ -1,22 +1,19 @@
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Game {
     // The board
     private Board board;
 
     // Players playing the game
-    private Map<Player, Mission> players;
+    private Map<Player, Mission> missions;
 
     // Unit Types in use
     private Collection<UnitType> unitTypes;
 
     public Game(Board board, List<Player> players, Collection<UnitType> unitTypes) {
         this.board = board;
-        this.players = new HashMap<>(players.size());
-        players.forEach(p -> this.players.put(p, null));
+        this.missions = new HashMap<>(players.size());
+        players.forEach(p -> this.missions.put(p, null));
         this.unitTypes = unitTypes;
     }
 
@@ -24,12 +21,15 @@ public class Game {
         return board;
     }
 
-    public Map<Player, Mission> getPlayers() {
-        return players;
+    public Map<Player, Mission> getMissions() {
+        return missions;
+    }
+
+    public Set<Player> getPlayers() {
+        return this.missions.keySet();
     }
 
     public Collection<UnitType> getUnitTypes() {
         return unitTypes;
     }
 }
-
