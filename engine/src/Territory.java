@@ -21,6 +21,10 @@ public class Territory {
         return Optional.ofNullable(owner);
     }
 
+    public void setOwner(Player player) {
+        this.owner = player;
+    }
+
     private Collection<Territory> neighbours = new ArrayList<>();
 
     public Collection<Territory> getNeighbours() {
