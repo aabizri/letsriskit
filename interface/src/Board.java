@@ -40,8 +40,7 @@ public class Board extends JPanel {
 
     public Board() {
 
-        initBoardClear();
-        menu();
+       initWorld();
 
     }
 
