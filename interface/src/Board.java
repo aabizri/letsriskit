@@ -39,9 +39,8 @@ public class Board extends JPanel {
     private JLabel allRules[] = {titleRules, emptyLabel, objectif, territory, army, position, lap, emptyLabel};
 
     public Board() {
-
-       initWorld();
-
+        initBoardClear();
+        menu();
     }
 
     private void menu(){

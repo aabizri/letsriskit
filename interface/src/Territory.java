@@ -1,7 +1,9 @@
 import javax.swing.*;
+import java.util.Collection;
 
 public class Territory {
     private static final int BUTTON_WIDTH = 15;
+    private JPanel map = new JPanel();
 
     String name;
     JButton button;
@@ -24,4 +26,12 @@ public class Territory {
         territoryButton.setBounds(x,y,width,width);
         return territoryButton;
     }
+
+    /**public JPanel seeMap(){
+        Map m = new Map();
+        menu.add(m);
+        Collection<Territory> territories = m.initWorldTerritories();
+        territories.forEach(t -> t.addToPanel(menu));
+        menu.setLayout(null);
+    }**/
 }

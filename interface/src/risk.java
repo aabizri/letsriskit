@@ -9,7 +9,6 @@ import javax.swing.*;
 
 public class risk extends JFrame {
 
-    private JFrame f = new JFrame();
     private JPanel menu = new JPanel();
 
     public risk(){
@@ -29,12 +28,6 @@ public class risk extends JFrame {
         setLocationRelativeTo(null);
         setSize(1280, 750);
         setResizable(false);
-
-        Map m = new Map();
-        menu.add(m);
-        Collection<Territory>territories = m.initWorldTerritories();
-        territories.forEach(t -> t.addToPanel(menu));
-        menu.setLayout(null);
 
        }
 

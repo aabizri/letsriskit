@@ -10,8 +10,6 @@ import javax.swing.*;
 
 public class Map extends JPanel {
 
-    private Image world;
-
     public Map(){
     }
 
@@ -60,26 +58,5 @@ public class Map extends JPanel {
         territories.add(new Territory("Alberta",159, 168));
         territories.add(new Territory("Alaska",58, 112));
         return territories;
-    }
-    public void initImageWorld() {
-
-        loadImageWorld();
-
-        int w = world.getWidth(this);
-        int h =  world.getHeight(this);
-        setPreferredSize(new Dimension(w, h));
-    }
-
-    private void loadImageWorld() {
-
-        ImageIcon w = new ImageIcon(new ImageIcon("interface/src/ressources/monde.jpg").getImage().getScaledInstance(1280,750,Image.SCALE_DEFAULT));
-        world = w.getImage();
-
-    }
-
-    public void paintComponent(Graphics g) {
-
-        g.drawImage(world, 0, 0, null);
-
     }
 }
