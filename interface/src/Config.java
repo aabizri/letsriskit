@@ -1,14 +1,12 @@
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 
-public class Board extends JPanel {
+public class Config extends JPanel {
 
     //Image de fond
     private Image background;
@@ -38,7 +36,8 @@ public class Board extends JPanel {
     private JLabel lap = new JLabel("<html>" + tabulation + "Chaque tour, les joueurs reçoivent des renforts. Ils doivent ensuite choisir de se " + tabulation + "déplacer et d'attaquer.");
     private JLabel allRules[] = {titleRules, emptyLabel, objectif, territory, army, position, lap, emptyLabel};
 
-    public Board() {
+
+    public Config() {
 
         initBoardClear();
         menu();
@@ -76,8 +75,8 @@ public class Board extends JPanel {
         Timer t1 = new Timer(delay, taskPerformer);
         t1.start();
 
-        this.setLayout(new GridLayout(2,0));
-        this.setVisible(true);
+        setLayout(new GridLayout(2,0));
+        setVisible(true);
 
         rules.addActionListener(new ActionListener() {
             @Override
@@ -105,34 +104,57 @@ public class Board extends JPanel {
 
     }
 
-    private void numberPlayers(){
+    public void numberPlayers(){
 
         Font font = new Font("Times Roman", Font.BOLD | Font.ITALIC, 35);
-        int players;
+        JPanel selectNbPlayers = new JPanel();
 
         for(int i = 0 ; i < 6 ; i++){
-            add(buttonsNumberPlayers[i]);
+            add(selectNbPlayers.add(buttonsNumberPlayers[i]));
             buttonsNumberPlayers[i].setBackground(new Color(0,0,0,0));
             buttonsNumberPlayers[i].setContentAreaFilled(false);
             buttonsNumberPlayers[i].setBorderPainted(false);
             buttonsNumberPlayers[i].setForeground(Color.WHITE);
             buttonsNumberPlayers[i].setFont(font);
-            buttonsNumberPlayers[i].addActionListener(e -> {
-
-                removeAll();
-
-                if (e.getActionCommand().equals("2 joueurs")){
-                    Player player = new Player();
-                    add(player.addPlayerName(2));
-                    player.addPlayerName(2).setVisible(true);
-                }
-
-            });
         }
-
-        this.setLayout(new GridLayout(6,0));
         this.setVisible(true);
 
+        addTagName();
+
+    }
+
+    private void addTagName(){
+
+        for(int i = 0 ; i < 6 ; i++){
+            buttonsNumberPlayers[i].addActionListener(e -> {
+                if (e.getActionCommand().equals("1 joueur (contre l'IA)")){
+                    PlayerNames player = new PlayerNames(1);
+                    player.getPlayerTagArea();
+                }
+                if (e.getActionCommand().equals("2 joueurs")){
+                    PlayerNames player = new PlayerNames(2);
+                    player.getPlayerTagArea();
+                    Missions mission = new Missions();
+                    mission.showMissions(player.getAllPlayers());
+                }
+                if (e.getActionCommand().equals("3 joueurs")){
+                    PlayerNames player = new PlayerNames(3);
+                    player.getPlayerTagArea();
+                }
+                if (e.getActionCommand().equals("4 joueurs")){
+                    PlayerNames player = new PlayerNames(4);
+                    player.getPlayerTagArea();
+                }
+                if (e.getActionCommand().equals("5 joueurs")){
+                    PlayerNames player = new PlayerNames(5);
+                    player.getPlayerTagArea();
+                }
+                if (e.getActionCommand().equals("6 joueurs")){
+                    PlayerNames player = new PlayerNames(6);
+                    player.getPlayerTagArea();
+                }
+            });
+        }
     }
 
     private void rules(){
@@ -146,7 +168,8 @@ public class Board extends JPanel {
         }
         titleRules.setFont(new Font("Times Roman", Font.BOLD | Font.ITALIC, 50));
 
-        this.setLayout(new GridLayout(10,0));
+        setLayout(null);
+        setLayout(new GridLayout(10,1));
 
         add(emptyButton);
         emptyButton.setBackground(new Color(0,0,0,0));
@@ -191,50 +214,31 @@ public class Board extends JPanel {
 
     }
 
-    private void initBoardClear(){
-
-        loadImageClear();
-
-        int w = background.getWidth(this);
-        int h =  background.getHeight(this);
-        setPreferredSize(new Dimension(w, h));
-    }
-
-    private void loadImageClear() {
+    public void initBoardClear(){
 
         ImageIcon bg = new ImageIcon("interface/src/ressources/risk.jpg");
         background = bg.getImage();
-
-    }
-
-    private void initBoardOOF(){
-
-        loadImageOOF();
-
         int w = background.getWidth(this);
         int h =  background.getHeight(this);
         setPreferredSize(new Dimension(w, h));
     }
 
-    private void loadImageOOF() {
+    public void initBoardOOF(){
 
         ImageIcon bg = new ImageIcon("interface/src/ressources/risk_flou.jpeg");
         background = bg.getImage();
-
-    }
-
-    private void initWorld(){
-        loadWorld();
-
         int w = background.getWidth(this);
-        int h = background.getHeight(this);
+        int h =  background.getHeight(this);
         setPreferredSize(new Dimension(w, h));
     }
 
-    private void loadWorld(){
+    public void initWorld(){
 
-        ImageIcon w = new ImageIcon(new ImageIcon("interface/src/ressources/world.jpg").getImage().getScaledInstance(1280,715,Image.SCALE_DEFAULT));
-        background = w.getImage();
+        ImageIcon world = new ImageIcon(new ImageIcon("interface/src/ressources/world.jpg").getImage().getScaledInstance(1280,715,Image.SCALE_DEFAULT));
+        background = world.getImage();
+        int w = background.getWidth(this);
+        int h = background.getHeight(this);
+        setPreferredSize(new Dimension(w, h));
     }
 
     public void paintComponent(Graphics g) {
