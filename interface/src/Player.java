@@ -4,6 +4,8 @@ public class Player {
     private Boolean IA;
 
     public Player(String name, Boolean IA){
+        this.name = name;
+        this.IA = IA;
     }
 
     public String getName() {
