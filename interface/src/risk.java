@@ -1,16 +1,20 @@
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JFrame;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.*;
 
 public class risk extends JFrame {
 
-    //Le menu
     private JPanel menu = new JPanel();
 
     public risk(){
 
         initUI();
-
     }
 
     private void initUI() {
@@ -18,7 +22,6 @@ public class risk extends JFrame {
         menu.add(new Config());
         menu.setVisible(true);
         add(menu);
-
         pack();
 
         setTitle("RISK");
@@ -28,12 +31,13 @@ public class risk extends JFrame {
 
     }
 
+       }
+
     public static void main(String[] args) {
 
         EventQueue.invokeLater(() -> {
             risk game = new risk();
             game.setVisible(true);
-        }
-        );
+        });
     }
 }
