@@ -35,6 +35,8 @@ public class PlayerQuantityChoicePanel extends Panel{
             final int playerQuantity = i+1;
             buttonsNumberPlayers[i].addActionListener(e -> parentFrame.setCurrentPanel(new PlayerNamesPanel(parentFrame,playerQuantity)));
         }
+
+        setLayout(new GridLayout(2,1));
     }
 
     public void initBoardOOF(){
