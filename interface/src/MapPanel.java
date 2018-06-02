@@ -63,24 +63,27 @@ public class MapPanel extends Panel {
         //Playing Buttons
         JButton attack = new JButton("ATTAQUER");
         JButton move = new JButton("DEPLACER");
-        JPanel playingPanel = new JPanel();
+        JButton endOfRound = new JButton("TERMINER");
         JLabel empty = new JLabel();
-        attack.setVisible(true);
+        JLabel empty2 = new JLabel();
         attack.setFont(font);
-        move.setVisible(true);
         move.setFont(font);
+        endOfRound.setFont(font);
+
+        //Buttons Panel
+        JPanel playingPanel = new JPanel();
         playingPanel.setVisible(true);
         playingPanel.add(attack);
         playingPanel.add(empty);
         playingPanel.add(move);
-        playingPanel.setLayout(new GridLayout(3,1));
+        playingPanel.add(empty2);
+        playingPanel.add(endOfRound);
+        playingPanel.setLayout(new GridLayout(5,1));
         playingPanel.setBackground(new Color(0,0,0,0));
-        playingPanel.setBounds(1100,250,160,200);
+        playingPanel.setBounds(1100,140,160,400);
 
+        //Attacking Panel
         JPanel attackPanel = new JPanel();
-        for(int i = 0; i < 42; i++){
-
-        }
 
         String[] allCountriesAttacking = {"Pays attaquant","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
                 "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
@@ -104,8 +107,8 @@ public class MapPanel extends Panel {
         JComboBox soldatAttack = new JComboBox(soldats);
         JComboBox canonAttack = new JComboBox(canons);
         JComboBox cavalierAttack = new JComboBox(cavaliers);
-        attackPanel.setBounds(1100,250,160,200);
-        attackPanel.setBackground(Color.WHITE);
+        attackPanel.setBounds(1100,210,160,250);
+        attackPanel.setBackground(new Color(0,0,0,0));
         attackPanel.setVisible(false);
         attackPanel.add(attackingTerritory);
         attackPanel.add(attackedTerritory);
@@ -124,9 +127,69 @@ public class MapPanel extends Panel {
         this.add(playingPanel);
         this.add(attackPanel);
 
+        //Moving Panel
+        JPanel movePanel = new JPanel();
+
+        String[] firstCountry = {"Territoire de départ","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
+                "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
+                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
+                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
+                "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
+        };
+        String[] secondCountry = {"Territoire d'arrivé","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
+                "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
+                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
+                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
+                "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
+        };
+        JComboBox firstTerritory = new JComboBox(firstCountry);
+        JComboBox secondTerritory = new JComboBox(secondCountry);
+        JButton validateMove = new JButton("DEPLACER");
+        JButton cancelMove = new JButton("ANNULER");
+        String[] soldatsMovement = {"Soldats","1","2","3"};
+        String[] canonsMovement = {"Canons","1","2","3"};
+        String[] cavaliersMovement = {"Cavaliers","1","2","3"};
+        JComboBox soldatQuantity = new JComboBox(soldatsMovement);
+        JComboBox canonQuantity = new JComboBox(canonsMovement);
+        JComboBox cavalierQuantity = new JComboBox(cavaliersMovement);
+        movePanel.setBounds(1100,210,160,250);
+        movePanel.setBackground(new Color(0,0,0,0));
+        movePanel.setVisible(false);
+        movePanel.add(firstTerritory);
+        movePanel.add(secondTerritory);
+        movePanel.add(soldatQuantity);
+        movePanel.add(canonQuantity);
+        movePanel.add(cavalierQuantity);
+        movePanel.add(validateMove);
+        movePanel.add(cancelMove);
+        movePanel.setLayout(new GridLayout(7,1));
+
+        cancelMove.addActionListener(e -> {
+            movePanel.setVisible(false);
+            playingPanel.setVisible(true);
+        });
+
+        //Ajouter les panels à la frame
+        this.add(playingPanel);
+        this.add(attackPanel);
+        this.add(movePanel);
+
+        //Action : quand le bouton ATTAQUER est cliqué
         attack.addActionListener(e -> {
             attackPanel.setVisible(true);
             playingPanel.setVisible(false);
+        });
+
+        //Action : quand le bouton DEPLACER est cliqué
+        move.addActionListener(e -> {
+            movePanel.setVisible(true);
+            playingPanel.setVisible(false);
+        });
+
+        //Action : Fin du tour
+        //TODO : ajouter la fin du tour
+        endOfRound.addActionListener(e -> {
+            
         });
     }
 
