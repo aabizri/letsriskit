@@ -9,9 +9,10 @@ import javax.swing.*;
 public class MapPanel extends Panel {
 
     private List<Player> players;
+    private Font font = new Font("Times Roman", Font.BOLD, 15);
+    final Collection<Territory> territories = new ArrayList<>(42);
 
-    private static Collection<Territory> getTerritories(){
-        final Collection<Territory> territories = new ArrayList<>(42);
+    private Collection<Territory> getTerritories(){
         territories.add(new Territory("Eastern Australia",1088,629));
         territories.add(new Territory("Western Australia",986,642));
         territories.add(new Territory("New Guinea",1038,505));
@@ -57,6 +58,78 @@ public class MapPanel extends Panel {
         return territories;
     }
 
+    private void playingButtons(){
+
+        //Playing Buttons
+        JButton attack = new JButton("ATTAQUER");
+        JButton move = new JButton("DEPLACER");
+        JPanel playingPanel = new JPanel();
+        JLabel empty = new JLabel();
+        attack.setVisible(true);
+        attack.setFont(font);
+        move.setVisible(true);
+        move.setFont(font);
+        playingPanel.setVisible(true);
+        playingPanel.add(attack);
+        playingPanel.add(empty);
+        playingPanel.add(move);
+        playingPanel.setLayout(new GridLayout(3,1));
+        playingPanel.setBackground(new Color(0,0,0,0));
+        playingPanel.setBounds(1100,250,160,200);
+
+        JPanel attackPanel = new JPanel();
+        for(int i = 0; i < 42; i++){
+
+        }
+
+        String[] allCountriesAttacking = {"Pays attaquant","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
+                "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
+                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
+                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
+                "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
+        };
+        String[] allCountriesAttacked = {"Pays attaqué","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
+                "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
+                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
+                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
+                "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
+        };
+        JComboBox attackingTerritory = new JComboBox(allCountriesAttacking);
+        JComboBox attackedTerritory = new JComboBox(allCountriesAttacked);
+        JButton validateAttack = new JButton("ATTAQUER");
+        JButton cancelAttack = new JButton("ANNULER");
+        String[] soldats = {"Soldats","1","2","3"};
+        String[] canons = {"Canons","1","2","3"};
+        String[] cavaliers = {"Cavaliers","1","2","3"};
+        JComboBox soldatAttack = new JComboBox(soldats);
+        JComboBox canonAttack = new JComboBox(canons);
+        JComboBox cavalierAttack = new JComboBox(cavaliers);
+        attackPanel.setBounds(1100,250,160,200);
+        attackPanel.setBackground(Color.WHITE);
+        attackPanel.setVisible(false);
+        attackPanel.add(attackingTerritory);
+        attackPanel.add(attackedTerritory);
+        attackPanel.add(soldatAttack);
+        attackPanel.add(canonAttack);
+        attackPanel.add(cavalierAttack);
+        attackPanel.add(validateAttack);
+        attackPanel.add(cancelAttack);
+        attackPanel.setLayout(new GridLayout(7,1));
+
+        cancelAttack.addActionListener(e -> {
+            attackPanel.setVisible(false);
+            playingPanel.setVisible(true);
+        });
+
+        this.add(playingPanel);
+        this.add(attackPanel);
+
+        attack.addActionListener(e -> {
+            attackPanel.setVisible(true);
+            playingPanel.setVisible(false);
+        });
+    }
+
     private void initWorldTerritories() {
         getTerritories().forEach(t -> t.addToPanel(this));
     }
@@ -67,6 +140,8 @@ public class MapPanel extends Panel {
         this.initBackgroundImage();
 
         this.initWorldTerritories();
+
+        this.playingButtons();
 
         this.setLayout(null);
     }
