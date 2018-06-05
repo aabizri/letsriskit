@@ -1,26 +1,12 @@
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Immutable, so thread-safe
+ * Should be thread safe
  */
-public class Event {
-    @NotNull private final String type;
-    @NotNull private final String message;
+public interface Event {
+    @NotNull
+    String getType();
 
     @NotNull
-    public String getType() {
-        return type;
-    }
-
-    @NotNull
-    public String getMessage() {
-        return message;
-    }
-
-    public Event(@NotNull String type, @NotNull String message) {
-        assert(type != null); assert(message != null);
-
-        this.type = type;
-        this.message = message;
-    }
+    String getMessage();
 }

@@ -7,45 +7,46 @@ import java.util.Optional;
 
 /**
  * Thread-safe IF listed units aren't manipulated directly
+ *
+ * TODO: Make it able to select 0 units, and add Ownable interface
  */
 public class UnitSelection implements Movable, Collection<Unit> {
     @NotNull private final Game game;
 
     @NotNull private final List<Unit> selection;
 
-    @NotNull private Territory currentTerritory;
-
-    public UnitSelection(@NotNull Game game, @NotNull List<@NotNull Unit> selection) throws Exception {
+    public UnitSelection(@NotNull Game game, @NotNull List<@NotNull Unit> selection) throws CantSelectException {
         assert(game != null);
         assert(selection != null);
 
         // Check that the selection is of at least one Unit
         if (selection.size() <= 0) {
-            throw new Exception("Empty selection");
+            throw new CantSelectException("Empty selection");
         }
 
         // Check that they are all on the same territory !
         if (selection.stream().anyMatch(u -> u != selection.get(0))) {
-            throw new Exception("Not all units are on the same territory");
+            throw new CantSelectException("Not all units are on the same territory");
         }
 
-        currentTerritory = selection.get(0).getCurrentTerritory();
         this.selection = selection;
         this.game = game;
     }
 
     @NotNull
     public Territory getCurrentTerritory() {
-        return currentTerritory;
+        return selection.get(0).getCurrentTerritory();
+
     }
 
     @NotNull
     public Player getOwner() {
-        assert(currentTerritory.getOwner().isPresent());
-        return currentTerritory.getOwner().get();
+        assert (this.getCurrentTerritory().getOwner().isPresent());
+        return this.getCurrentTerritory().getOwner().get();
     }
 
-    private synchronized void setUnitsCurrentTerritory(@NotNull Territory dst) {
+    @Override
+    public synchronized void setCurrentTerritory(@NotNull Territory dst) {
         this.selection.forEach(u -> u.setCurrentTerritory(dst));
     }
 
@@ -62,40 +63,38 @@ public class UnitSelection implements Movable, Collection<Unit> {
     }
 
     @Override
-    public void decrementMovesLeft() {
-        if (this.getMovesLeft() <= 0) {
-            return;
-        }
-
-        this.selection.forEach(Unit::decrementMovesLeft);
+    public boolean canMove(Territory dst) {
+        return this.selection.stream().allMatch(u -> u.canMove(dst));
     }
 
-    public boolean canPeacefullyMove(@NotNull Territory dst) {
+    private boolean canPeacefullyMove(@NotNull Territory dst) {
         assert(dst != null);
 
         return this.canMove(dst) && (!dst.getOwner().isPresent() || dst.getOwner().get().equals(this.getOwner()));
     }
 
+
     /**
-     * Move a unit selection to a new territory, attacking it if necessary for the forceMove
+     * Move a unit selection to a new territory, attacking it if necessary for the move
      *
-     * The Battle created in case of hostile territory is played through, which means that it may fail and thus the forceMove may not be applied
+     * The Battle created in case of hostile territory is played through, which means that it may fail and thus the move may not be applied
      */
+    @Override
     @NotNull
-    public Optional<Battle> forceMove(@NotNull Territory dst) throws Exception {
+    public Optional<Battle> move(@NotNull Territory dst) throws CantMoveException {
         assert(dst != null);
 
         if (!canMove(dst)) {
-            throw new Exception("Can't forceMove !");
+            throw new CantMoveException(this, dst, null);
         }
 
         Optional<Battle> ob = Optional.empty();
-        if (dst.getOwner() != currentTerritory.getOwner()) {
+        if (dst.getOwner() != this.getCurrentTerritory().getOwner()) {
             Battle b = this.attack(dst);
             b.blitz();
             ob = Optional.of(b);
 
-            if (b.isAttackerVictorious()) this.setUnitsCurrentTerritory(dst);
+            if (b.isAttackerVictorious()) this.setCurrentTerritory(dst);
         } else {
             this.peacefulMove(dst);
         }
@@ -104,26 +103,30 @@ public class UnitSelection implements Movable, Collection<Unit> {
     }
 
     @NotNull
-    public Battle attack(@NotNull Territory dst) throws Exception {
+    private Battle attack(@NotNull Territory dst) throws CantAttackException {
         assert(dst != null);
 
         if (!canMove(dst)
                 && dst.getOwner().isPresent()
                 && !dst.getOwner().get().equals(this.getOwner())) {
-            throw new Exception("Can't forceMove there");
+            throw new CantAttackException(this, dst, null);
         }
 
-        return new Battle(this.game, this, dst);
+        return new DefaultBattle(this.game, this, dst);
     }
 
-    public void peacefulMove(@NotNull Territory dst) throws Exception {
+    /**
+     * @return true if peaceful move successful
+     */
+    private boolean peacefulMove(@NotNull Territory dst) {
         assert(dst != null);
 
         if (!canPeacefullyMove(dst)) {
-            throw new Exception("Can't peacefully forceMove there !");
+            return false;
         }
 
-        this.setUnitsCurrentTerritory(dst);
+        this.setCurrentTerritory(dst);
+        return true;
     }
 
     /**
