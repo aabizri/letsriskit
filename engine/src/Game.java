@@ -52,7 +52,7 @@ public class Game {
     }
 
     public List<Turn> getTurns() {
-        return new ArrayList<>(this.turns)
+        return new ArrayList<>(this.turns);
     }
 
 
