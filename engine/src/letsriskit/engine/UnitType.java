@@ -55,14 +55,6 @@ public class UnitType {
         this.moves = moves;
     }
 
-    public ByteArrayOutputStream marshalJSON() {
-
-    }
-
-    public void unmarshalJSON(ByteArrayInputStream) {
-
-    }
-
     /**
      * spawns a letsriskit.engine.Unit of this type that hasn't been placed on a territory yet
      *

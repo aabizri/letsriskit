@@ -24,5 +24,9 @@ public class Player {
     }
 
     public Boolean getIA() { return IA; }
+/**
+    public void play(Turn turn){
 
+    }
+**/
 }

@@ -12,6 +12,7 @@ public class Territory /** extends engine.Territory **/{
 
     String name;
     JButton button;
+    
 
     Territory(final String name, final int x, final int y){
         this.button = newButton(x,y,20);
@@ -29,7 +30,7 @@ public class Territory /** extends engine.Territory **/{
 
     /** public void colorButton(Territory territory){
         final JButton territoryButton = territory.getButton();
-        territoryButton.setBackground(this.getOwner().getColor());
+        territoryButton.setBackground(((Player) this.getOwner()).getColor());
     } **/
 
     public void getTerritoryFrame(JButton b){
