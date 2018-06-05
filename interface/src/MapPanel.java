@@ -13,14 +13,6 @@ import javax.swing.*;
 public class MapPanel extends Panel {
 
     private List<Player> players;
-
-    private static Collection<Territory> getTerritories(){
-        final Collection<Territory> territories = new ArrayList<>(42);
-        territories.add(new Territory("Eastern Australia",1088,645));
-        territories.add(new Territory("Western Australia",986,652));
-        territories.add(new Territory("New Guinea",1038,513));
-        territories.add(new Territory("Indonesia",938,505));
-        territories.add(new Territory("Japan",1041,260));
     private Font font = new Font("Times Roman", Font.BOLD, 15);
     final Collection<Territory> territories = new ArrayList<>(42);
 
