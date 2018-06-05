@@ -2,12 +2,12 @@ public class Player {
 
     private String name;
     private Boolean IA;
-    private String couleur;
+    private String color;
 
-    public Player(String name, Boolean IA, String couleur){
+    public Player(String name, Boolean IA, String color){
         this.name = name;
         this.IA = IA;
-        this.couleur = couleur;
+        this.color = color;
     }
 
     public String getName() {
@@ -18,5 +18,5 @@ public class Player {
         return IA;
     }
 
-    public String getCouleur() { return couleur; }
+    public String getCouleur() { return color; }
 }

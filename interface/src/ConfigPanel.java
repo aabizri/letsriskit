@@ -58,7 +58,7 @@ public class ConfigPanel extends Panel {
         rulesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                repaint();;
+                repaint();
                 parentFrame.setCurrentPanel(new RulesPanel(parentFrame));
             }
         });

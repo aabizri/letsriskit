@@ -3,13 +3,12 @@ import java.awt.*;
 
 public class PlayerQuantityChoicePanel extends Panel{
 
-    private final JButton solo = new JButton("1 joueur (contre l'IA)");
     private final JButton duo = new JButton("2 joueurs");
     private final JButton trio = new JButton("3 joueurs");
     private final JButton quator = new JButton("4 joueurs");
     private final JButton quintet = new JButton("5 joueurs");
     private final JButton sextuor = new JButton("6 joueurs");
-    private final JButton[] buttonsNumberPlayers = {solo, duo, trio, quator, quintet, sextuor};
+    private final JButton[] buttonsNumberPlayers = {duo, trio, quator, quintet, sextuor};
 
     private final RiskFrame parentFrame;
 
@@ -21,7 +20,7 @@ public class PlayerQuantityChoicePanel extends Panel{
         Font font = new Font("Times Roman", Font.BOLD | Font.ITALIC, 35);
         JPanel selectNbPlayers = new JPanel();
 
-        for(int i = 0 ; i < 6 ; i++){
+        for(int i = 0 ; i < 5 ; i++){
             add(selectNbPlayers.add(buttonsNumberPlayers[i]));
             buttonsNumberPlayers[i].setBackground(new Color(0,0,0,0));
             buttonsNumberPlayers[i].setContentAreaFilled(false);
@@ -31,12 +30,12 @@ public class PlayerQuantityChoicePanel extends Panel{
         }
         this.setVisible(true);
 
-        for(int i = 0 ; i < 6 ; i++){
-            final int playerQuantity = i+1;
+        for(int i = 0 ; i < 5 ; i++){
+            final int playerQuantity = i+2de;
             buttonsNumberPlayers[i].addActionListener(e -> parentFrame.setCurrentPanel(new PlayerNamesPanel(parentFrame,playerQuantity)));
         }
 
-        setLayout(new GridLayout(2,1));
+        setLayout(new GridLayout(5,1));
     }
 
     public void initBoardOOF(){

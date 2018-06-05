@@ -10,7 +10,6 @@ public class PlayerNamesPanel extends Panel {
     private JButton back = new JButton("<");
     private JButton next = new JButton(">");
     private Font font = new Font("Times Roman", Font.BOLD, 30);
-    private String tabulation = "&nbsp;&nbsp;&nbsp;&nbsp;";
     private ArrayList<Player> allPlayers = new ArrayList<>();
 
     //Tous les JTextArea
@@ -40,9 +39,9 @@ public class PlayerNamesPanel extends Panel {
     String jaune = "Jaune";
     String rouge = "Rouge";
     String vert = "Vert";
-    String rose = "Rose";
+    String blanc = "Blanc";
     String noir = "Noir";
-    String[] couleurs = {bleu, jaune, rouge, vert, rose, noir};
+    String[] couleurs = {bleu, jaune, rouge, vert, blanc, noir};
     JComboBox combo1 = new JComboBox(couleurs);
     JComboBox combo2 = new JComboBox(couleurs);
     JComboBox combo3 = new JComboBox(couleurs);
