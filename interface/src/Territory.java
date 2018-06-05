@@ -12,7 +12,7 @@ public class Territory /** extends engine.Territory **/{
 
     String name;
     JButton button;
-    
+
 
     Territory(final String name, final int x, final int y){
         this.button = newButton(x,y,20);
