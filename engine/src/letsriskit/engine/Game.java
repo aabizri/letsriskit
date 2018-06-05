@@ -1,3 +1,5 @@
+package letsriskit.engine;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -8,10 +10,10 @@ public class Game {
     // Players
     private List<Player> players;
 
-    // Unit Types
+    // letsriskit.engine.Unit Types
     private Collection<UnitType> unitTypes;
 
-    // Unit registry
+    // letsriskit.engine.Unit registry
     public UnitRegistry unitRegistry = new UnitRegistry();
 
     public Game(Collection<Region> regions, List<Player> players, Collection<UnitType> unitTypes) {

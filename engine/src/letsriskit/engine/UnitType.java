@@ -1,3 +1,5 @@
+package letsriskit.engine;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -62,7 +64,7 @@ public class UnitType {
     }
 
     /**
-     * spawns a Unit of this type that hasn't been placed on a territory yet
+     * spawns a letsriskit.engine.Unit of this type that hasn't been placed on a territory yet
      *
      * @param owner
      * @return

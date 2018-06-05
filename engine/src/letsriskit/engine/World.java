@@ -1,3 +1,5 @@
+package letsriskit.engine;
+
 import java.util.Collection;
 
 public class World {

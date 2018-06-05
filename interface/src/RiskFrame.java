@@ -17,7 +17,8 @@ public class RiskFrame extends JFrame {
         this.setTitle("RISK");
         this.setLocationRelativeTo(null);
         this.setSize(1280, 750);
-        this.setResizable(false);
+        this.setResizable(true);
+
     }
 
     public synchronized void setCurrentPanel(JPanel newPanel) {

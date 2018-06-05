@@ -1,3 +1,5 @@
+package letsriskit.engine;
+
 interface Movable {
     Territory getCurrentTerritory();
     int getMovesLeft();

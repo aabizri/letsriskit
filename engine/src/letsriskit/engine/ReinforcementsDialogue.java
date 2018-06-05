@@ -1,3 +1,5 @@
+package letsriskit.engine;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +9,7 @@ public class ReinforcementsDialogue {
     private Game game;
     private Player player;
 
-    // distribution stores the UnitType->Quantity distribution for reinforcements
+    // distribution stores the letsriskit.engine.UnitType->Quantity distribution for reinforcements
     private Map<UnitType, Integer> distribution;
 
     public ReinforcementsDialogue(Game game, Player owner, List<UnitType> unitTypeList, int unitQuantity) {
@@ -75,7 +77,7 @@ public class ReinforcementsDialogue {
 
     }
 
-    // Transform all the reinforcements to a single UnitSelection
+    // Transform all the reinforcements to a single letsriskit.engine.UnitSelection
     public UnitSelection transform() throws Exception {
         List<Unit> units = new ArrayList<>();
         distribution.forEach( (ut, q) ->

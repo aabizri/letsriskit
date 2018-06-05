@@ -1,5 +1,9 @@
+package letsriskit.engine;
+
 public class Turn {
     private int turn;
+
+    /*
     private Board board;
 
     public ReinforcementsDialogue getReinforcements() {
@@ -10,4 +14,5 @@ public class Turn {
         }
         int unitsFromCapture = round(rand(1))*; // 50% that you get one from a captured territory
     }
+    */
 }

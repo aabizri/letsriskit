@@ -1,3 +1,5 @@
+package letsriskit.engine;
+
 public class Unit implements Movable {
     private UnitType type;
     private Player owner;
@@ -43,7 +45,7 @@ public class Unit implements Movable {
     public void decrementMovesLeft() {this.moveCounter--;}
 
     // move to adjacent territory only
-    // WARNING: no battle here, battles  managed on the UnitSelection level
+    // WARNING: no battle here, battles  managed on the letsriskit.engine.UnitSelection level
     public void move(Territory dst) throws Exception {
         if (!canMove(dst)) {
             throw new Exception("Cannot move");

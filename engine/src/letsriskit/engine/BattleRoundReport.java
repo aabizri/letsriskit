@@ -1,3 +1,5 @@
+package letsriskit.engine;
+
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -14,7 +16,7 @@ public class BattleRoundReport {
     }
 
     /**
-     * Commit the BattleRound to history, applying the deaths on the defeated units
+     * Commit the letsriskit.engine.BattleRound to history, applying the deaths on the defeated units
      */
     public void commit() {
         Stream.concat(attackers.entrySet().stream(),defenders.entrySet().stream()).filter(entry -> !entry.getValue()).forEach(entry -> entry.getKey().kill());

@@ -1,3 +1,5 @@
+package letsriskit.engine;
+
 import java.util.*;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,9 +32,9 @@ public class BattleRound {
     /**
      * Pick the defending party from the defending territory using the given rules
      *
-     * @return UnitSelection the defending party
+     * @return letsriskit.engine.UnitSelection the defending party
      *
-     * @throws Exception if problem in generating the UnitSelection
+     * @throws Exception if problem in generating the letsriskit.engine.UnitSelection
      */
     public UnitSelection pickDefendingParty() throws Exception {
         List<Unit> selectedUnits = game.
@@ -54,7 +56,7 @@ public class BattleRound {
     /**
      * Engage executes the battle round, returning the rolls and killing the units defeated
      *
-     * @return BattleRoundReport a report of the battle round casualties & rolls
+     * @return letsriskit.engine.BattleRoundReport a report of the battle round casualties & rolls
      */
     public BattleRoundReport engage() throws Exception {
         Rolls r = this.roll();
