@@ -31,7 +31,7 @@ public class PlayerQuantityChoicePanel extends Panel{
         this.setVisible(true);
 
         for(int i = 0 ; i < 5 ; i++){
-            final int playerQuantity = i+2de;
+            final int playerQuantity = i+2;
             buttonsNumberPlayers[i].addActionListener(e -> parentFrame.setCurrentPanel(new PlayerNamesPanel(parentFrame,playerQuantity)));
         }
 
