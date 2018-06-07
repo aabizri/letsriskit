@@ -74,6 +74,6 @@ public class RulesPanel extends Panel {
     }
 
     public void initBoardOOF(){
-        this.setBackgroundFile("interface/src/ressources/risk_flou.jpeg");
+        this.setBackgroundFile("risk/gui/ressources/risk_flou.jpeg");
     }
 }

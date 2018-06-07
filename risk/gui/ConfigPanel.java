@@ -1,16 +1,14 @@
 package gui;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JPanel;
 
 public class ConfigPanel extends Panel {
     RiskFrame parentFrame;
 
-    private static final String backgroundFilename = "interface/src/ressources/risk.jpg";
+    private static final String backgroundFilename = "risk/gui/ressources/risk.jpg";
 
     //Boutons JOUER & règles
     private JButton rulesButton = new JButton("Les règles du jeu");
