@@ -1,10 +1,12 @@
 package gui;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Collection;
+import javax.swing.JPanel;
+
+import javax.swing.*;
 
 public class MapPanel extends Panel {
 
@@ -58,6 +60,10 @@ public class MapPanel extends Panel {
         return territories;
     }
 
+    private void initColor(){ getTerritories().forEach(t -> t.ColorButton()); }
+    private void initializeTroups(){
+        JButton troups = new JButton("Poser des troupes");
+    }
     private void playingButtons(){
 
         //Playing Buttons
@@ -204,13 +210,15 @@ public class MapPanel extends Panel {
 
         this.initWorldTerritories();
 
+        this.initColor();
+
         this.playingButtons();
 
         this.setLayout(null);
     }
 
     public Image getBackgroundImage() {
-        return (new ImageIcon("risk/gui/ressources/world.jpg")).getImage().getScaledInstance(1280, 715, Image.SCALE_DEFAULT);
+        return (new ImageIcon("interface/src/ressources/world.jpg")).getImage().getScaledInstance(1280, 715, Image.SCALE_DEFAULT);
     }
 
     private void initBackgroundImage() {
