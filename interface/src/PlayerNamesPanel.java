@@ -35,13 +35,14 @@ public class PlayerNamesPanel extends Panel {
     private JCheckBox[] IACheckbox = {IACheckbox1, IACheckbox2, IACheckbox3, IACheckbox4, IACheckbox5, IACheckbox6};
     private Boolean IA;
 
+
     //couleurs
-    String bleu = "Bleu";
-    String jaune = "Jaune";
-    String rouge = "Rouge";
-    String vert = "Vert";
-    String rose = "Rose";
-    String noir = "Noir";
+    String bleu = "blue";
+    String jaune = "yellow";
+    String rouge = "RED";
+    String vert = "GREEN";
+    String rose = "pink";
+    String noir = "BLACK";
     String[] couleurs = {bleu, jaune, rouge, vert, rose, noir};
     JComboBox combo1 = new JComboBox(couleurs);
     JComboBox combo2 = new JComboBox(couleurs);

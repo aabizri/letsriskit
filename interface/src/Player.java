@@ -6,7 +6,6 @@ public class Player {
    // private engine.Game game;
    // private engine.Player enginePlayer;
     private List<Territory> territories;
-    private Color color;
     private String name;
     private Boolean IA;
     private String couleur;
@@ -15,6 +14,12 @@ public class Player {
         this.name = name;
         this.IA = IA;
         this.couleur = couleur;
+    }
+
+    public Color getColor(){
+        String c = this.getCouleur();
+        Color color = Color.getColor(c);
+        return color;
     }
 
     public String getName() {

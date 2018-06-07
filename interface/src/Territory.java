@@ -12,7 +12,7 @@ public class Territory /** extends engine.Territory **/{
 
     String name;
     JButton button;
-
+    Collection<Player> players;
 
     Territory(final String name, final int x, final int y){
         this.button = newButton(x,y,20);
@@ -28,10 +28,18 @@ public class Territory /** extends engine.Territory **/{
 
     public String getName() { return name; }
 
-    /** public void colorButton(Territory territory){
-        final JButton territoryButton = territory.getButton();
-        territoryButton.setBackground(((Player) this.getOwner()).getColor());
-    } **/
+    public Collection<Player> getPlayers(){
+        return players;
+    }
+
+
+     public void colorButtonBlue(JButton territoryButton){
+        territoryButton.setBackground(Color.BLUE);
+    }
+
+    public void colorButtonGreen(JButton territoryButton){
+        territoryButton.setBackground(Color.green);
+    }
 
     public void getTerritoryFrame(JButton b){
         Territory territory = this;
@@ -58,7 +66,7 @@ public class Territory /** extends engine.Territory **/{
                 territoryInformation.add(canon);
 
 
-                territoryInformation.add(exit);
+
                 territoryInformation.setLayout(new GridLayout(6,1));
 
                 exit.setText("<HTML><BODY> CLICK TO CONTINUE</BODY></HTML>");

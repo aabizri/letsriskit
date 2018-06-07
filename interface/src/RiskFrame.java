@@ -18,7 +18,7 @@ public class RiskFrame extends JFrame {
 
         this.setTitle("RISK");
         this.setSize(1280, 750);
-        this.setResizable(false);
+        this.setResizable(true);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLocation(((screen.width -  this.getSize().width)/2), (screen.height - this.getSize().height)/2);
     }

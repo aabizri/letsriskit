@@ -59,8 +59,10 @@ public class MapPanel extends Panel {
         territories.add(new Territory("North West Territory",173, 112));
         territories.add(new Territory("Alberta",159, 170));
         territories.add(new Territory("Alaska",58, 114));
+
         return territories;
     }
+
 
     private void playingButtons(){
 
@@ -197,6 +199,17 @@ public class MapPanel extends Panel {
         });
     }
 
+    private  void initColor() {
+        int c = 1;
+        for (Territory territories : getTerritories()) {
+            c++;
+            if (c % 2 == 1) {
+                territories.colorButtonGreen(territories.getButton());
+            } else {
+                territories.colorButtonBlue(territories.getButton());
+            }
+        }
+    }
     private void initWorldTerritories() {
         getTerritories().forEach(t -> t.addToPanel(this) );
     }
@@ -205,6 +218,8 @@ public class MapPanel extends Panel {
         this.players = players;
 
         this.initBackgroundImage();
+
+        this.initColor();
 
         this.initWorldTerritories();
 
