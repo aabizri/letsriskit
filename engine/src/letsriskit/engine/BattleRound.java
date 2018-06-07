@@ -1,97 +1,62 @@
-package letsriskit.engine;
+import java.util.Optional;
+import java.util.Random;
 
-import java.util.*;
-import java.util.Map;
-import java.util.stream.Collectors;
+/**
+ * Should be thread-safe
+ */
+public interface BattleRound {
+    int MAX_ATTACKING_PARTY_SIZE = 3;
+    int MAX_DEFENDING_PARTY_SIZE = 2;
 
-public class BattleRound {
-    private Game game;
+    UnitSelection getAttackingParty();
 
-    public static int MAX_ATTACKING_PARTY_SIZE = 3;
-    public static int MAX_DEFENDING_PARTY_SIZE = 2;
+    Territory getDefendingTerritory();
 
-    private UnitSelection attackingParty;
-    private Territory defendingTerritory;
+    /**
+     * Pick the defending party from the defending territory using the given rules.
+     *
+     * Should be idempotent, but can change if units move in/out of the territory between two calls
+     *
+     * @return UnitSelection the defending party
+     */
+    UnitSelection pickDefendingParty() throws NoUnitOnTerritoryException, CantSelectException;
 
-    public BattleRound(Game game, UnitSelection attackingParty, Territory defendingTerritory) throws Exception {
-        if (this.attackingParty.size() > BattleRound.MAX_ATTACKING_PARTY_SIZE) {
-            throw new Exception("Attacking Party Size exceeds maximum !");
-        }
-        if (game.unitRegistry.findByTerritory(this.attackingParty.getCurrentTerritory()).size() == 0) {
-            throw new Exception("When attacking, at least 1 unit should stay in the territory from which originates the attack");
-        }
-        this.attackingParty = attackingParty;
-        this.defendingTerritory = defendingTerritory;
-        this.game = game;
-    }
+    /**
+     * Engage executes the battle round, returning the report
+     *
+     * WARNING : the results are NOT committed automatically, one needs to manually execute BattleRoundReport.commit()
+     * Or use the other form blitz;
+     *
+     * @return BattleRoundReport a report of the battle round casualties & rolls
+     */
+    BattleRoundReport engage(Rolls r);
 
-    public UnitSelection getAttackingParty() {
-        return this.attackingParty;
+    default BattleRoundReport engage() throws NoUnitOnTerritoryException, CantSelectException {
+        Rolls r = new Rolls(new Random(), this.getAttackingParty(), this.pickDefendingParty());
+        return this.engage(r);
     }
 
     /**
-     * Pick the defending party from the defending territory using the given rules
-     *
-     * @return letsriskit.engine.UnitSelection the defending party
-     *
-     * @throws Exception if problem in generating the letsriskit.engine.UnitSelection
+     * Engages using engage() and commits using BattleRoundReport.commit()
      */
-    public UnitSelection pickDefendingParty() throws Exception {
-        List<Unit> selectedUnits = game.
-                unitRegistry.
-                findByTerritory(defendingTerritory).
-                stream().
-                sorted(
-                    Comparator.comparing(u -> u.getType().getDefensePriority())
-                ).
-                limit(BattleRound.MAX_DEFENDING_PARTY_SIZE).
-                collect(Collectors.toList());
-        return new UnitSelection(this.game,selectedUnits);
-    }
-
-    private Rolls roll() throws Exception {
-        return new Rolls(new Random(), attackingParty, this.pickDefendingParty());
+    default BattleRoundReport blitz() throws NoUnitOnTerritoryException, CantSelectException {
+        BattleRoundReport report = this.engage();
+        report.commit();
+        return report;
     }
 
     /**
-     * Engage executes the battle round, returning the rolls and killing the units defeated
-     *
-     * @return letsriskit.engine.BattleRoundReport a report of the battle round casualties & rolls
+     * @return true if it wasn't committed before and has been successfully marked as committed
      */
-    public BattleRoundReport engage() throws Exception {
-        Rolls r = this.roll();
-        Map<Unit, Integer> attackerRolls = r.getAttackerRolls();
-        Map<Unit, Integer> defenderRolls = r.getDefenderRolls();
+    boolean commit(BattleRoundReport report);
 
-        Comparator<Map.Entry<Unit, Integer>> rollComparator
-                = Comparator.comparingInt(Map.Entry::getValue);
+    /**
+     * @return true if the BattleRound has been committed
+     */
+    boolean hasBeenCommitted();
 
-        Comparator<Map.Entry<Unit, Integer>> defensePriorityComparator
-                = Comparator.<Map.Entry<Unit, Integer>>comparingInt(entry -> entry.getKey().getType().getDefensePriority()).reversed();
-        Comparator<Map.Entry<Unit, Integer>> attackPriorityComparator
-                = Comparator.<Map.Entry<Unit, Integer>>comparingInt(entry -> entry.getKey().getType().getAttackPriority()).reversed();
-
-        Comparator<Map.Entry<Unit, Integer>> defenseComparator = rollComparator.thenComparing(defensePriorityComparator);
-        Comparator<Map.Entry<Unit, Integer>> attackComparator = rollComparator.thenComparing(attackPriorityComparator);
-
-        Map<Unit, Boolean> attackersCasualties = new HashMap<>(attackerRolls.size());
-        Map<Unit, Boolean> defendersCasualties = new HashMap<>(defenderRolls.size());
-
-        for (int i = 0; i < Integer.min(r.getAttackerRolls().size(), r.getDefenderRolls().size()); i++) {
-            Map.Entry<Unit, Integer> attackerEntryWithMaxRoll = attackerRolls.entrySet().stream().max(attackComparator).get();
-            Map.Entry<Unit, Integer> defenderEntryWithMaxRoll = defenderRolls.entrySet().stream().max(defenseComparator).get();
-
-            boolean attackerWins = attackerEntryWithMaxRoll.getValue() > defenderEntryWithMaxRoll.getValue();
-
-            // Remove from map so as not to iterate on them again
-            defenderRolls.remove(defenderEntryWithMaxRoll.getKey());
-            attackerRolls.remove(attackerEntryWithMaxRoll.getKey());
-
-            // Mark casualties
-            attackersCasualties.put(attackerEntryWithMaxRoll.getKey(), attackerWins);
-            defendersCasualties.put(defenderEntryWithMaxRoll.getKey(), !attackerWins);
-        }
-
-        return new BattleRoundReport(r,attackersCasualties,defendersCasualties);
-    }
+    /**
+     * @return report if it has been committed
+     */
+    Optional<BattleRoundReport> getReport();
 }

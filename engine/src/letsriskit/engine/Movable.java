@@ -1,11 +1,13 @@
-package letsriskit.engine;
+import java.util.Optional;
 
 interface Movable {
     Territory getCurrentTerritory();
-    int getMovesLeft();
-    void decrementMovesLeft();
 
-    default boolean canMove(Territory dst) {
-        return getCurrentTerritory().calculateIsNeighbour(dst) && getMovesLeft() != 0;
-    }
+    void setCurrentTerritory(Territory dst);
+
+    int getMovesLeft();
+
+    boolean canMove(Territory dst);
+
+    Optional<Battle> move(Territory dst) throws CantMoveException;
 }

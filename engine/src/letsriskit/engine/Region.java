@@ -1,11 +1,10 @@
-package letsriskit.engine;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class Region {
     private String name;
-    private List<Territory> territories;
+    private List<Territory> territories = new ArrayList<>();
 
     public String getName() {
         return this.name;
@@ -28,5 +27,17 @@ public class Region {
             return ret;
         }
         return sampleTerritory.getOwner();
+    }
+
+    /**
+     * creates a new territory correctly associated with this region
+     *
+     * @param name the name of the territory
+     * @return the new territory
+     */
+    public Territory newTerritory(String name) {
+        Territory t = new Territory(this,name);
+        this.territories.add(t);
+        return t;
     }
 }
