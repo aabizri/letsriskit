@@ -24,7 +24,7 @@ public class ReinforcementsInteraction {
         int unitsFromRegions = (int) Math.floor(
                 board.getRegions().stream().filter(r -> r.getOwner().isPresent() && r.getOwner().get().equals(player)).mapToLong(r -> r.getTerritories().size()).sum()
                         /2); // floor(N/2)
-        int unitsFromCapture = (int) Math.round(new Random().nextDouble())*previousTurn.capturedTerritories(); // 50% that you get one from a captured territory
+        int unitsFromCapture = (int) Math.round(new Random().nextDouble()) * previousTurn.getCapturedTerritories(); // 50% that you get one from a captured territory
         return unitsFromTerritories+unitsFromRegions+unitsFromCapture;
     }
 
