@@ -1,5 +1,3 @@
-package gui;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -74,6 +72,6 @@ public class RulesPanel extends Panel {
     }
 
     public void initBoardOOF(){
-        this.setBackgroundFile("risk/gui/ressources/risk_flou.jpeg");
+        this.setBackgroundFile("interface/src/ressources/risk_flou.jpeg");
     }
 }

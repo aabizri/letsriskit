@@ -1,14 +1,14 @@
-package gui;
-
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JPanel;
 
 public class ConfigPanel extends Panel {
-    private RiskFrame parentFrame;
+    RiskFrame parentFrame;
 
-    private static final String backgroundFilename = "risk/gui/ressources/risk.jpg";
+    private static final String backgroundFilename = "interface/src/ressources/risk.jpg";
 
     //Boutons JOUER & règles
     private JButton rulesButton = new JButton("Les règles du jeu");
@@ -58,7 +58,7 @@ public class ConfigPanel extends Panel {
         rulesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                repaint();;
+                repaint();
                 parentFrame.setCurrentPanel(new RulesPanel(parentFrame));
             }
         });

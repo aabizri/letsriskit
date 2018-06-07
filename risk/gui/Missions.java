@@ -1,4 +1,4 @@
-package gui;
+import javafx.embed.swing.JFXPanel;
 
 import javax.swing.*;
 import java.util.ArrayList;

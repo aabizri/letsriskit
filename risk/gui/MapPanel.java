@@ -1,16 +1,23 @@
-package gui;
-
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Collection;
+import javax.swing.JPanel;
+
+import javax.swing.*;
 
 public class MapPanel extends Panel {
 
     private List<Player> players;
     private Font font = new Font("Times Roman", Font.BOLD, 15);
+    private Font font2 = new Font("Times Roman", Font.BOLD, 30);
     final Collection<Territory> territories = new ArrayList<>(42);
+    private final String tabulation = "&nbsp;&nbsp;&nbsp;&nbsp;";
+    int i = 0;
+
+    public MapPanel(){
+
+    }
 
     private Collection<Territory> getTerritories(){
         territories.add(new Territory("Eastern Australia",1088,629));
@@ -58,17 +65,45 @@ public class MapPanel extends Panel {
         return territories;
     }
 
+    public void showRound(){
+
+        JPanel roundInformations = new JPanel();
+
+        JButton endOfRound = new JButton("TERMINER");
+        endOfRound.setFont(font);
+        endOfRound.setBounds(1100,460,160,80);
+        this.add(endOfRound);
+
+        JLabel roundLabel = new JLabel();
+        roundLabel.setFont(font2);
+        roundLabel.setForeground(Color.WHITE);
+        roundInformations.setVisible(false);
+        roundInformations.setBackground(new Color(0,0,0,0));
+        roundInformations.setBounds(980,0,300,100);
+        roundInformations.add(roundLabel);
+        this.add(roundInformations);
+
+
+        //Action : Fin du tour
+        //TODO : ajouter la fin du tour
+        endOfRound.addActionListener(e -> {
+
+            this.i++;
+            roundLabel.setText("TOUR NUMERO " + String.valueOf(this.i));
+            roundInformations.add(roundLabel);
+            roundInformations.setVisible(true);
+        });
+
+    }
+
     private void playingButtons(){
 
         //Playing Buttons
         JButton attack = new JButton("ATTAQUER");
         JButton move = new JButton("DEPLACER");
-        JButton endOfRound = new JButton("TERMINER");
         JLabel empty = new JLabel();
-        JLabel empty2 = new JLabel();
         attack.setFont(font);
         move.setFont(font);
-        endOfRound.setFont(font);
 
         //Buttons Panel
         JPanel playingPanel = new JPanel();
@@ -76,8 +111,6 @@ public class MapPanel extends Panel {
         playingPanel.add(attack);
         playingPanel.add(empty);
         playingPanel.add(move);
-        playingPanel.add(empty2);
-        playingPanel.add(endOfRound);
         playingPanel.setLayout(new GridLayout(5,1));
         playingPanel.setBackground(new Color(0,0,0,0));
         playingPanel.setBounds(1100,140,160,400);
@@ -85,43 +118,72 @@ public class MapPanel extends Panel {
         //Attacking Panel
         JPanel attackPanel = new JPanel();
 
-        String[] allCountriesAttacking = {"Pays attaquant","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
-                "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
-                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
-                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
-                "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
+        String[] allCountriesAttacking = {
+                "Pays attaquant","Afghanistan","Alaska","Alberta","Argentina","Brazil","Central America","China",
+                "Congo","Eastern Africa","Eastern Australia","Eastern United States","Egypt","Great Britain","Greenland","Iceland","Indonesia",
+                "Irkutsk","Japan","Kamchatka", "India","Madagascar", "South Africa","Middle East","Mongolia","New Guinea","North West Territory",
+                "Northern Africa","Peru","Quebec", "Ontario","Scandinavia", "Northern Europe", "Southern Europe","Siam","Siberia","Ukraine","Ural",
+                "Venezuela","Western Australia","Western Europe","Western United States","Yakutsk"
         };
-        String[] allCountriesAttacked = {"Pays attaqué","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
-                "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
-                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
-                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
-                "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
+        String[] allCountriesAttacked = {
+                "Pays attaqué","Afghanistan","Alaska","Alberta","Argentina","Brazil","Central America","China",
+                "Congo","Eastern Africa","Eastern Australia","Eastern United States","Egypt","Great Britain","Greenland","Iceland","Indonesia",
+                "Irkutsk","Japan","Kamchatka", "India","Madagascar", "South Africa","Middle East","Mongolia","New Guinea","North West Territory",
+                "Northern Africa","Peru","Quebec", "Ontario","Scandinavia", "Northern Europe", "Southern Europe","Siam","Siberia","Ukraine","Ural",
+                "Venezuela","Western Australia","Western Europe","Western United States","Yakutsk"
         };
         JComboBox attackingTerritory = new JComboBox(allCountriesAttacking);
         JComboBox attackedTerritory = new JComboBox(allCountriesAttacked);
         JButton validateAttack = new JButton("ATTAQUER");
         JButton cancelAttack = new JButton("ANNULER");
-        String[] soldats = {"Soldats","1","2","3"};
-        String[] canons = {"Canons","1","2","3"};
-        String[] cavaliers = {"Cavaliers","1","2","3"};
+        Integer[] soldats = {0,1,2,3};
+        Integer[] canons = {0,1,2,3};
+        Integer[] cavaliers = {0,1,2,3};
+        JLabel soldatsTitle = new JLabel("Soldats");
+        JLabel canonsTitle = new JLabel("Canons");
+        JLabel cavaliersTitle = new JLabel("Cavaliers");
+        soldatsTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        soldatsTitle.setFont(font);
+        canonsTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        canonsTitle.setFont(font);
+        cavaliersTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        cavaliersTitle.setFont(font);
         JComboBox soldatAttack = new JComboBox(soldats);
         JComboBox canonAttack = new JComboBox(canons);
         JComboBox cavalierAttack = new JComboBox(cavaliers);
-        attackPanel.setBounds(1100,210,160,250);
-        attackPanel.setBackground(new Color(0,0,0,0));
+        attackPanel.setBounds(1100,100,160,350);
+        attackPanel.setBackground(Color.WHITE);
         attackPanel.setVisible(false);
         attackPanel.add(attackingTerritory);
         attackPanel.add(attackedTerritory);
+        attackPanel.add(soldatsTitle);
         attackPanel.add(soldatAttack);
+        attackPanel.add(canonsTitle);
         attackPanel.add(canonAttack);
+        attackPanel.add(cavaliersTitle);
         attackPanel.add(cavalierAttack);
         attackPanel.add(validateAttack);
         attackPanel.add(cancelAttack);
-        attackPanel.setLayout(new GridLayout(7,1));
+        attackPanel.setLayout(new GridLayout(10,1));
 
         cancelAttack.addActionListener(e -> {
             attackPanel.setVisible(false);
             playingPanel.setVisible(true);
+        });
+
+        validateAttack.addActionListener(e -> {
+            int quantitySoldats = (int)soldatAttack.getSelectedItem();
+            int quantityCanons = (int)canonAttack.getSelectedItem();
+            int quantityCavaliers = (int)cavalierAttack.getSelectedItem();
+            System.out.println(quantityCanons);
+            System.out.println(quantitySoldats);
+            System.out.println(quantityCavaliers);
+            if (quantitySoldats + quantityCanons + quantityCavaliers > 3){
+                JOptionPane.showMessageDialog(attackPanel, "Vous pouvez attaquer avec au maximum 3 unités","Erreur pendant l'attaque",JOptionPane.ERROR_MESSAGE);
+            }
+            if (quantityCanons + quantityCavaliers + quantitySoldats == 0){
+                JOptionPane.showMessageDialog(attackPanel, "Impossible d'attaquer avec 0 unités","Erreur pendant l'attaque",JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         this.add(playingPanel);
@@ -130,39 +192,50 @@ public class MapPanel extends Panel {
         //Moving Panel
         JPanel movePanel = new JPanel();
 
-        String[] firstCountry = {"Territoire de départ","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
-                "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
-                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
-                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
-                "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
+        String[] firstCountry = {
+                "Territoire de départ","Afghanistan","Alaska","Alberta","Argentina","Brazil","Central America","China",
+                "Congo","Eastern Africa","Eastern Australia","Eastern United States","Egypt","Great Britain","Greenland","Iceland","Indonesia",
+                "Irkutsk","Japan","Kamchatka", "India","Madagascar", "South Africa","Middle East","Mongolia","New Guinea","North West Territory",
+                "Northern Africa","Peru","Quebec", "Ontario","Scandinavia", "Northern Europe", "Southern Europe","Siam","Siberia","Ukraine","Ural",
+                "Venezuela","Western Australia","Western Europe","Western United States","Yakutsk"
         };
-        String[] secondCountry = {"Territoire d'arrivé","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
-                "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
-                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
-                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
-                "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
+        String[] secondCountry = {
+                "Territoire d'arrivé","Afghanistan","Alaska","Alberta","Argentina","Brazil","Central America","China",
+                "Congo","Eastern Africa","Eastern Australia","Eastern United States","Egypt","Great Britain","Greenland","Iceland","Indonesia",
+                "Irkutsk","Japan","Kamchatka", "India","Madagascar", "South Africa","Middle East","Mongolia","New Guinea","North West Territory",
+                "Northern Africa","Peru","Quebec", "Ontario","Scandinavia", "Northern Europe", "Southern Europe","Siam","Siberia","Ukraine","Ural",
+                "Venezuela","Western Australia","Western Europe","Western United States","Yakutsk"
         };
         JComboBox firstTerritory = new JComboBox(firstCountry);
         JComboBox secondTerritory = new JComboBox(secondCountry);
         JButton validateMove = new JButton("DEPLACER");
         JButton cancelMove = new JButton("ANNULER");
-        String[] soldatsMovement = {"Soldats","1","2","3"};
-        String[] canonsMovement = {"Canons","1","2","3"};
-        String[] cavaliersMovement = {"Cavaliers","1","2","3"};
-        JComboBox soldatQuantity = new JComboBox(soldatsMovement);
-        JComboBox canonQuantity = new JComboBox(canonsMovement);
-        JComboBox cavalierQuantity = new JComboBox(cavaliersMovement);
-        movePanel.setBounds(1100,210,160,250);
-        movePanel.setBackground(new Color(0,0,0,0));
+        JLabel soldatsMovement = new JLabel("Soldats");
+        JLabel canonsMovement = new JLabel("Canons");
+        JLabel cavaliersMovement = new JLabel("Cavaliers");
+        soldatsMovement.setFont(font);
+        soldatsMovement.setHorizontalAlignment(SwingConstants.CENTER);
+        canonsMovement.setFont(font);
+        canonsMovement.setHorizontalAlignment(SwingConstants.CENTER);
+        cavaliersMovement.setFont(font);
+        cavaliersMovement.setHorizontalAlignment(SwingConstants.CENTER);
+        JComboBox soldatQuantity = new JComboBox();
+        JComboBox canonQuantity = new JComboBox();
+        JComboBox cavalierQuantity = new JComboBox();
+        movePanel.setBackground(Color.WHITE);
+        movePanel.setBounds(1100,100,160,350);
         movePanel.setVisible(false);
         movePanel.add(firstTerritory);
         movePanel.add(secondTerritory);
+        movePanel.add(soldatsMovement);
         movePanel.add(soldatQuantity);
+        movePanel.add(canonsMovement);
         movePanel.add(canonQuantity);
+        movePanel.add(cavaliersMovement);
         movePanel.add(cavalierQuantity);
         movePanel.add(validateMove);
         movePanel.add(cancelMove);
-        movePanel.setLayout(new GridLayout(7,1));
+        movePanel.setLayout(new GridLayout(10,1));
 
         cancelMove.addActionListener(e -> {
             movePanel.setVisible(false);
@@ -185,12 +258,32 @@ public class MapPanel extends Panel {
             movePanel.setVisible(true);
             playingPanel.setVisible(false);
         });
+    }
 
-        //Action : Fin du tour
-        //TODO : ajouter la fin du tour
-        endOfRound.addActionListener(e -> {
-            
+    private void victory(){
+
+        JPanel victory = new JPanel();
+        JButton backToMenu = new JButton("RETOUR AU MENU");
+        backToMenu.setFont(font);
+        JLabel winner = new JLabel("<html>"+tabulation+tabulation+tabulation+"Félicitations PLAYER'S NAME, tu as gagné !</html>");
+        winner.setFont(font);
+        victory.setBackground(Color.WHITE);
+        victory.setBounds(450,250,400,200);
+        victory.add(winner);
+        victory.add(backToMenu);
+        victory.setVisible(false);
+        victory.setLayout(new GridLayout(2,1));
+        this.add(victory);
+
+        backToMenu.addActionListener(e -> {
+            //TODO retour au menu
         });
+
+        //
+        /**if (victory){
+         removeAll();
+         victory.setVisible(true);
+        }**/
     }
 
     private void initWorldTerritories() {
@@ -206,11 +299,15 @@ public class MapPanel extends Panel {
 
         this.playingButtons();
 
+        this.showRound();
+
         this.setLayout(null);
+
+        this.victory();
     }
 
     public Image getBackgroundImage() {
-        return (new ImageIcon("risk/gui/ressources/world.jpg")).getImage().getScaledInstance(1280, 715, Image.SCALE_DEFAULT);
+        return (new ImageIcon("interface/src/ressources/world.jpg")).getImage().getScaledInstance(1280, 715, Image.SCALE_DEFAULT);
     }
 
     private void initBackgroundImage() {
