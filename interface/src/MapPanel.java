@@ -59,6 +59,9 @@ public class MapPanel extends Panel {
     }
 
     private void initColor(){ getTerritories().forEach(t -> t.ColorButton()); }
+    private void initializeTroups(){
+        JButton troups = new JButton("Poser des troupes");
+    }
     private void playingButtons(){
 
         //Playing Buttons
