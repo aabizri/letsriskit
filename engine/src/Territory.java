@@ -21,14 +21,18 @@ public class Territory {
         return Optional.ofNullable(owner);
     }
 
-    public void setOwner(Player player) {
-        this.owner = player;
+    public void setOwner(Player owner){
+        this.owner = owner;
     }
 
     private Collection<Territory> neighbours = new ArrayList<>();
 
     public Collection<Territory> getNeighbours() {
         return neighbours;
+    }
+
+    public synchronized void addNeighbour(Territory neighbour) {
+        this.neighbours.add(neighbour);
     }
 
     public Territory(Region r, String name) {
