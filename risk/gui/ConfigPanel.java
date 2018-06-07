@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public class ConfigPanel extends Panel {
     private RiskFrame parentFrame;
 
-    private static final String backgroundFilename = "interface/engine/ressources/risk.jpg";
+    private static final String backgroundFilename = "risk/gui/ressources/risk.jpg";
 
     //Boutons JOUER & règles
     private JButton rulesButton = new JButton("Les règles du jeu");

@@ -210,7 +210,7 @@ public class MapPanel extends Panel {
     }
 
     public Image getBackgroundImage() {
-        return (new ImageIcon("interface/engine/ressources/world.jpg")).getImage().getScaledInstance(1280, 715, Image.SCALE_DEFAULT);
+        return (new ImageIcon("risk/gui/ressources/world.jpg")).getImage().getScaledInstance(1280, 715, Image.SCALE_DEFAULT);
     }
 
     private void initBackgroundImage() {
