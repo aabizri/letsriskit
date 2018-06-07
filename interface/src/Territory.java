@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.util.Collection;
 
 public class Territory {
@@ -10,6 +11,19 @@ public class Territory {
     Territory(final String name, final int x, final int y){
         this.button = newButton(x,y);
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public JButton getButton() {
+        return button;
+    }
+
+    public void ColorButton(){
+        JButton button = this.getButton();
+        button.setBackground(Color.BLUE);
     }
 
     public void addToPanel(JPanel panel) {
