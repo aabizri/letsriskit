@@ -27,19 +27,20 @@ public class Game {
     private List<Player> players;
 
     // Missions
-    private Map<Player, Mission> missions;
+    private Map<Player, Mission> assignedMissions;
 
     // Unit Types in use
     private Collection<UnitType> unitTypes;
 
-    // Loaded missions: missions that can be distributed once ascertained that they are available
+    // Loaded assignedMissions: assignedMissions that can be distributed once ascertained that they are available
     private Collection<Mission> loadedMissions;
 
-    public Game(Board board, List<Player> players, Collection<UnitType> unitTypes) {
+    public Game(Board board, List<Player> players, Collection<Mission> missions, Collection<UnitType> unitTypes) {
         this.board = board;
         this.players = players;
-        this.missions = new HashMap<>(players.size());
-        players.forEach(p -> this.missions.put(p, null));
+        this.loadedMissions = missions;
+        this.assignedMissions = new HashMap<>(players.size());
+        players.forEach(p -> this.assignedMissions.put(p, null));
         this.unitTypes = unitTypes;
     }
 
@@ -48,7 +49,7 @@ public class Game {
     }
 
     public Map<Player, Mission> getMissions() {
-        return missions;
+        return assignedMissions;
     }
 
     public List<Player> getPlayers() {
@@ -100,7 +101,7 @@ public class Game {
     }
 
     /**
-     * Prepare the game (Allocate missions, territories & units)
+     * Prepare the game (Allocate assignedMissions, territories & units)
      *
      * @throws GameStateException
      */
@@ -164,7 +165,7 @@ public class Game {
         Collection<Mission> availableMissionsSet = this.getAvailableMissions();
         List<Mission> availableMissions = availableMissionsSet instanceof List ? (List) availableMissionsSet : new ArrayList<>(availableMissionsSet);
 
-        this.missions.entrySet().forEach(e -> {
+        this.assignedMissions.entrySet().forEach(e -> {
             Mission m = availableMissions.get(rand.nextInt(availableMissions.size()));
             e.setValue(m);
         });
@@ -186,14 +187,14 @@ public class Game {
     private void allocateUnits() throws GameStateException {
         if (this.state.get() != STATE_PREPARING) throw new GameStateException();
 
-        final int unitsPerPlayer = 50 - this.missions.size() * 5;
+        final int unitsPerPlayer = 50 - this.assignedMissions.size() * 5;
 
         final Consumer<Player> allocateUnitsForPlayer = (player -> {
             ReinforcementsInteraction interaction = new ReinforcementsInteraction(this, player, this.unitTypes, unitsPerPlayer);
             player.prepare(interaction);
         });
 
-        this.missions.keySet().parallelStream().forEach(allocateUnitsForPlayer);
+        this.assignedMissions.keySet().parallelStream().forEach(allocateUnitsForPlayer);
     }
 
     /**
@@ -204,11 +205,11 @@ public class Game {
         List<Territory> territories = territoriesCollection instanceof List ? (List) territoriesCollection : new ArrayList<>(territoriesCollection);
         Collections.shuffle(territories, rand);
 
-        int territoriesPerPlayer = territories.size() / this.missions.size();
-        int remainingTerritories = territories.size() % this.missions.size();
+        int territoriesPerPlayer = territories.size() / this.assignedMissions.size();
+        int remainingTerritories = territories.size() % this.assignedMissions.size();
 
         AtomicInteger i = new AtomicInteger(0);
-        return this.missions.keySet().stream().map(p -> {
+        return this.assignedMissions.keySet().stream().map(p -> {
             int quantityOfTerritoriesForPlayer = territoriesPerPlayer + i.get() < remainingTerritories ? 1 : 0;
             i.getAndIncrement();
 
