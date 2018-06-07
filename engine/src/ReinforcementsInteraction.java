@@ -1,16 +1,34 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class ReinforcementsDialogue {
+public class ReinforcementsInteraction {
     private Game game;
     private Player player;
 
     // distribution stores the UnitType->Quantity distribution for reinforcements
     private Map<UnitType, Integer> distribution;
 
-    public ReinforcementsDialogue(Game game, Player owner, List<UnitType> unitTypeList, int unitQuantity) {
+    /**
+     * Calculates the quantiy of units that should be given out, given three parameters.
+     * This is probabilistic because of the units from captured territories, which means that two calls to this method MAY NOT return the same value
+     *
+     * @param player the player whose turn it is
+     * @param board the board on which we play
+     * @param previousTurn the previous turn which is used for calculation of previously captured territories
+     *
+     * @return the "total budget" for units reinforcements
+     */
+    public static int calculateUnitQuantity(Player player, Board board, Turn previousTurn) {
+        int unitsFromTerritories = (int) Math.floor(
+                board.getTerritories().stream().filter(t -> t.getOwner().isPresent() && t.getOwner().get().equals(player)).count()
+                        /3); // floor(T/3)
+        int unitsFromRegions = (int) Math.floor(
+                board.getRegions().stream().filter(r -> r.getOwner().isPresent() && r.getOwner().get().equals(player)).mapToLong(r -> r.getTerritories().size()).sum()
+                        /2); // floor(N/2)
+        int unitsFromCapture = (int) Math.round(new Random().nextDouble()) * previousTurn.getCapturedTerritories(); // 50% that you get one from a captured territory
+        return unitsFromTerritories+unitsFromRegions+unitsFromCapture;
+    }
+
+    public ReinforcementsInteraction(Game game, Player owner, Collection<UnitType> unitTypeList, int unitQuantity) {
         this.player = owner;
 
         this.distribution = new HashMap<>(unitTypeList.size());
@@ -23,29 +41,39 @@ public class ReinforcementsDialogue {
         distribution.put(UnitType.soldier, unitQuantity);
     }
 
-    // Get unit total cost
+    /**
+     * @return total cost/value of all units (for each unit type: unit type cost * unit quantity of that type)
+     */
     public int getTotalValue() {
-        return distribution.keySet().stream().mapToInt(ut -> ut.getCost() * distribution.get(ut)).sum();
+        return distribution.entrySet().stream().mapToInt(entry-> entry.getKey().getCost() * entry.getValue()).sum();
     }
 
-    // Get number of units as currently configured
+    /**
+     * @return the number of units as currently configured
+     */
     public int getQuantity() {
         return distribution.values().stream().mapToInt(i -> i).sum();
     }
 
-    // Get distribution
+    /**
+     * @return the distribution
+     */
     public Map<UnitType, Integer> getDistribution() {
-        return this.distribution;
+        return new HashMap<>(this.distribution);
     }
 
-    // Recruitment procedure: convert some soldiers for some other units
-    public void recruit(UnitType recruitType, int quantity) throws Exception {
+    /**
+     * Upgrade procedure: convert some soldiers for some other units
+     *
+     * TODO: Specify the Exception
+     */
+    public void upgrade(UnitType recruitType, int quantity) throws Exception {
         int transactionCost = recruitType.getCost() * quantity;
         int soldierQuantity = this.distribution.get(UnitType.soldier);
 
         // Sanity check
         if (soldierQuantity < transactionCost) {
-            throw new Exception("Not enough soldiers to recruit riders and/or guns");
+            throw new Exception("Not enough soldiers to upgrade riders and/or guns");
         }
 
         // Remove soldiers
@@ -56,8 +84,12 @@ public class ReinforcementsDialogue {
         this.distribution.put(recruitType, preExistingUnitsOfThatType + quantity);
     }
 
-    // Disband procedure: convert some unit type to soldier
-    public void unrecruit(UnitType recruitType, int quantity) throws Exception {
+    /**
+     * Downgrade procedure: convert some unit type to soldier
+     *
+     * TODO: Specify the Exception
+     */
+    public void downgrade(UnitType recruitType, int quantity) throws Exception {
         int unitsOfThatType = this.distribution.get(recruitType);
 
         // Sanity check
@@ -72,11 +104,12 @@ public class ReinforcementsDialogue {
         int preExistingSoldiers = this.distribution.get(UnitType.soldier);
         int newSoldiers = recruitType.getCost() * quantity;
         this.distribution.replace(UnitType.soldier, preExistingSoldiers + newSoldiers);
-
     }
 
-    // Transform all the reinforcements to a single UnitSelection
-    public UnitSelection transform() throws Exception {
+    /**
+     *  Transform all the reinforcements to a single UnitSelection, ready to be placed
+     */
+    public UnitSelection transform() throws CantSelectException {
         List<Unit> units = new ArrayList<>();
         distribution.forEach( (ut, q) ->
             units.addAll(
@@ -87,7 +120,11 @@ public class ReinforcementsDialogue {
         return new UnitSelection(game, units);
     }
 
-    // Drop so many units of that type on a given territory
+    /**
+     * Transform the given subselection to a UnitSelection
+     *
+     * TODO: Specify the Exception launched
+     */
     public UnitSelection transform(Map<UnitType,Integer> subselection) throws Exception {
         List<Unit> units = new ArrayList<>();
         for (UnitType ut : subselection.keySet()) {
@@ -104,11 +141,8 @@ public class ReinforcementsDialogue {
         return new UnitSelection(game, units);
     }
 
-    // Drop the types on
-
-    // Close it
     public void close() {
         this.distribution.clear();
         this.distribution = null;
-    };
+    }
 }
