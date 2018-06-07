@@ -15,12 +15,15 @@ public class Board {
         return regions;
     }
 
-
     public Collection<Territory> getTerritories() {
         return regions.stream().flatMap(r -> r.getTerritories().stream()).collect(Collectors.toList());
     }
 
     public UnitRegistry getUnits() {
         return units;
+    }
+
+    public Board(Collection<Region> regions) {
+        this.regions = regions;
     }
 }

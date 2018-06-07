@@ -1,6 +1,7 @@
 package engine;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,8 +38,8 @@ public class Game {
     // Loaded assignedMissions: assignedMissions that can be distributed once ascertained that they are available
     private Collection<Mission> loadedMissions;
 
-    public Game(Board board, List<Player> players, Collection<Mission> missions, Collection<UnitType> unitTypes) {
-        this.board = board;
+    public Game(Collection<Region> regions, List<Player> players, Collection<Mission> missions, Collection<UnitType> unitTypes) {
+        this.board = new Board(regions);
         this.players = players;
         this.loadedMissions = missions;
         this.assignedMissions = new HashMap<>(players.size());
@@ -233,6 +234,16 @@ public class Game {
 
     private Collection<Mission> getAvailableMissions() {
         return this.loadedMissions.stream().filter(m -> m.isAvailable(this)).collect(Collectors.toList());
+    }
+
+    @TestOnly
+    public static void main(String[] args) {
+
+        World world = World.realWorld;
+        List<Player> players = new ArrayList<>();
+        Collection<Mission> missions = new ArrayList<>();
+        Collection<UnitType> unitTypes = UnitType.basicSet;
+        Game game = new Game(world.getRegions(), players, missions, unitTypes);
     }
 }
 

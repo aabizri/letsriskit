@@ -4,11 +4,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Spliterator;
 import java.util.function.Consumer;
-import java.util.stream.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Immutable, and as such thread-safe
@@ -17,6 +20,7 @@ public class UnitType {
     public final static UnitType soldier = new UnitType("Soldier", 1, 1, 6, 2, 1, 2);
     public final static UnitType rider = new UnitType("Rider", 3, 2, 7, 1, 3, 3);
     public final static UnitType canon = new UnitType("Canon", 7, 4, 9, 3, 2,1);
+    public final static Collection<UnitType> basicSet = new ArrayList<>(Arrays.asList(soldier, rider, canon));
 
     private @NotNull String name;
     private int cost;
