@@ -24,16 +24,20 @@ public class Game {
     private Board board;
 
     // Players playing the game
+    private List<Player> players;
+
+    // Missions
     private Map<Player, Mission> missions;
 
     // Unit Types in use
     private Collection<UnitType> unitTypes;
 
-    // Available missions
-    private Collection<Mission> availableMissions;
+    // Loaded missions: missions that can be distributed once ascertained that they are available
+    private Collection<Mission> loadedMissions;
 
     public Game(Board board, List<Player> players, Collection<UnitType> unitTypes) {
         this.board = board;
+        this.players = players;
         this.missions = new HashMap<>(players.size());
         players.forEach(p -> this.missions.put(p, null));
         this.unitTypes = unitTypes;
@@ -47,8 +51,8 @@ public class Game {
         return missions;
     }
 
-    public Set<Player> getPlayers() {
-        return this.missions.keySet();
+    public List<Player> getPlayers() {
+        return this.players;
     }
 
     public Collection<UnitType> getUnitTypes() {
@@ -144,19 +148,23 @@ public class Game {
 
         if (!hasNextTurn()) {
             this.state.set(STATE_STARTED);
+            return Optional.empty();
         }
 
         int newTurnNumber = this.turnCounter.incrementAndGet();
-        return new Optional.of(new Turn());
+        Turn newTurn = new Turn(this,newTurnNumber,this.getPlayerForTurnNumber(newTurnNumber));
+        this.turns.add(newTurn);
+
+        return Optional.of(newTurn);
     }
 
     private void allocateMissions(Random rand) throws GameStateException {
         if (this.state.get() != STATE_PREPARING) throw new GameStateException();
 
-        Collection<Mission> availableMissionsSet = Game.getAvailableMissionsForPlayerCount(this.availableMissions, this.players.size());
+        Collection<Mission> availableMissionsSet = this.getAvailableMissions();
         List<Mission> availableMissions = availableMissionsSet instanceof List ? (List) availableMissionsSet : new ArrayList<>(availableMissionsSet);
 
-        this.players.entrySet().forEach(e -> {
+        this.missions.entrySet().forEach(e -> {
             Mission m = availableMissions.get(rand.nextInt(availableMissions.size()));
             e.setValue(m);
         });
@@ -169,7 +177,6 @@ public class Game {
                 territories.forEach(territory -> territory.setOwner(player))
         );
 
-
         final Stream<Map.Entry<Player, Collection<Territory>>> territoryDistributionStream = this.generateTerritoryDistributionStream(new Random());
 
         territoryDistributionStream.parallel()
@@ -179,14 +186,14 @@ public class Game {
     private void allocateUnits() throws GameStateException {
         if (this.state.get() != STATE_PREPARING) throw new GameStateException();
 
-        final int unitsPerPlayer = 50 - this.players.size() * 5;
+        final int unitsPerPlayer = 50 - this.missions.size() * 5;
 
         final Consumer<Player> allocateUnitsForPlayer = (player -> {
             ReinforcementsInteraction interaction = new ReinforcementsInteraction(this, player, this.unitTypes, unitsPerPlayer);
             player.prepare(interaction);
         });
 
-        this.players.keySet().parallelStream().forEach(allocateUnitsForPlayer);
+        this.missions.keySet().parallelStream().forEach(allocateUnitsForPlayer);
     }
 
     /**
@@ -197,17 +204,32 @@ public class Game {
         List<Territory> territories = territoriesCollection instanceof List ? (List) territoriesCollection : new ArrayList<>(territoriesCollection);
         Collections.shuffle(territories, rand);
 
-        int territoriesPerPlayer = territories.size() / this.players.size();
-        int remainingTerritories = territories.size() % this.players.size();
+        int territoriesPerPlayer = territories.size() / this.missions.size();
+        int remainingTerritories = territories.size() % this.missions.size();
 
         AtomicInteger i = new AtomicInteger(0);
-        return this.players.keySet().stream().map(p -> {
+        return this.missions.keySet().stream().map(p -> {
             int quantityOfTerritoriesForPlayer = territoriesPerPlayer + i.get() < remainingTerritories ? 1 : 0;
             i.getAndIncrement();
 
             Collection<Territory> territoriesForPlayer = territories.stream().limit(quantityOfTerritoriesForPlayer).collect(Collectors.toCollection(ArrayList::new));
             return new AbstractMap.SimpleEntry<>(p, territoriesForPlayer);
         });
+    }
+
+    /**
+     * Gets the player corresponding to the given turn
+     *
+     * @param turnNumber the turn number
+     * @return Player the player
+     */
+    private Player getPlayerForTurnNumber(int turnNumber) {
+        int playerIndex = turnNumber % (this.players.size());
+        return this.players.get(playerIndex);
+    }
+
+    private Collection<Mission> getAvailableMissions() {
+        return this.loadedMissions.stream().filter(m -> m.isAvailable(this)).collect(Collectors.toList());
     }
 }
 
