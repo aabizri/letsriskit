@@ -1,7 +1,6 @@
-import javafx.embed.swing.JFXPanel;
+package gui;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 public class Missions extends JFrame {
 
