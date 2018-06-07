@@ -98,36 +98,30 @@ public class PlayerNamesPanel extends Panel {
         });
 
         next.addActionListener(e -> {
+
+            //Erreurs dans le formulaire
+            for (int j = 0; j < numberOfPlayers; j++){
+                for (int k = j+1; k < numberOfPlayers; k++) {
+                    if (allCombos[j].getSelectedItem() == allCombos[k].getSelectedItem()) {
+                        JOptionPane.showMessageDialog(this, "Des joueurs ont la même couleur.","Erreur dans le choix des couleurs",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (names[j].getText().isEmpty()){
+                        JOptionPane.showMessageDialog(this, "Il manque un ou plusieurs nom(s).","Erreur dans le choix des noms",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (names[j].getText().equals( names[k].getText())) {
+                        JOptionPane.showMessageDialog(this, "Des joueurs ont le même nom.","Erreur dans le choix des noms",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+            }
+
             for (int i = 0; i < numberOfPlayers; i++) {
                 if (IACheckbox[i].isSelected()){
                     IA = true;
                 } IA = false;
-
-                if (names[i].getText().isEmpty()){
-                    name = names[i].toString();
-                } name = names[i].getText();
-
-
-                //TODO Si 2 joueurs ont la même couleur alors afficher un message d'erreur
-                /**for (int j = 0; j < couleurs.length; j++){
-                    for (int k = 0; k < couleurs.length; k++) {
-                        if (allCombos[j].getSelectedItem() == allCombos[k].getSelectedItem()) {
-                            JFrame error = new JFrame();
-                            JLabel errorSentence = new JLabel("Deux joueurs ont la même couleur");
-                            JButton ok = new JButton("Compris");
-                            error.setTitle("Erreur");
-                            error.setLocationRelativeTo(null);
-                            error.add(errorSentence);
-                            error.add(ok);
-                            error.setLayout(new GridLayout(2,1));
-                            error.setVisible(true);
-                            ok.addActionListener(e1 ->{
-                                error.setVisible(false);
-                            });
-                        }
-                    }
-                }**/
-
+                name = names[i].getText();
                 allPlayers.add(new Player(name, IA, allCombos[i].getSelectedItem().toString()));
             }
             parentFrame.setCurrentPanel(new MapPanel(parentFrame,allPlayers));

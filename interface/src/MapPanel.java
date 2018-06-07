@@ -13,11 +13,7 @@ public class MapPanel extends Panel {
     private Font font2 = new Font("Times Roman", Font.BOLD, 30);
     final Collection<Territory> territories = new ArrayList<>(42);
     private final String tabulation = "&nbsp;&nbsp;&nbsp;&nbsp;";
-    int i = 0;
-
-    public MapPanel(){
-
-    }
+    int round = 0;
 
     private Collection<Territory> getTerritories(){
         territories.add(new Territory("Eastern Australia",1088,629));
@@ -88,8 +84,9 @@ public class MapPanel extends Panel {
         //TODO : ajouter la fin du tour
         endOfRound.addActionListener(e -> {
 
-            this.i++;
-            roundLabel.setText("TOUR NUMERO " + String.valueOf(this.i));
+            round++;
+            roundLabel.setText("TOUR NUMERO " + String.valueOf(round));
+            roundInformations.removeAll();
             roundInformations.add(roundLabel);
             roundInformations.setVisible(true);
         });
@@ -175,15 +172,23 @@ public class MapPanel extends Panel {
             int quantitySoldats = (int)soldatAttack.getSelectedItem();
             int quantityCanons = (int)canonAttack.getSelectedItem();
             int quantityCavaliers = (int)cavalierAttack.getSelectedItem();
-            System.out.println(quantityCanons);
-            System.out.println(quantitySoldats);
-            System.out.println(quantityCavaliers);
+            String selectedAttackingTerritory = attackingTerritory.getSelectedItem().toString();
+            String selectedAttackedTerritory = attackedTerritory.getSelectedItem().toString();
+            if (selectedAttackedTerritory.equals("Pays attaqué") | selectedAttackingTerritory.equals("Pays attaquant")){
+                JOptionPane.showMessageDialog(this, "Vous devez choisir le pays attaquant et sa cible","Erreur pendant l'attaque",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (quantitySoldats + quantityCanons + quantityCavaliers > 3){
-                JOptionPane.showMessageDialog(attackPanel, "Vous pouvez attaquer avec au maximum 3 unités","Erreur pendant l'attaque",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Vous pouvez attaquer avec au maximum 3 unités","Erreur pendant l'attaque",JOptionPane.ERROR_MESSAGE);
+                return;
             }
             if (quantityCanons + quantityCavaliers + quantitySoldats == 0){
-                JOptionPane.showMessageDialog(attackPanel, "Impossible d'attaquer avec 0 unités","Erreur pendant l'attaque",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Impossible d'attaquer avec 0 unités","Erreur pendant l'attaque",JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            attackPanel.setVisible(false);
+            playingPanel.setVisible(true);
+            JOptionPane.showMessageDialog(this, "Attaque effectuée","Attaque de " + selectedAttackingTerritory + " sur " + selectedAttackedTerritory,JOptionPane.INFORMATION_MESSAGE);
         });
 
         this.add(playingPanel);
@@ -242,6 +247,18 @@ public class MapPanel extends Panel {
             playingPanel.setVisible(true);
         });
 
+        validateMove.addActionListener(e -> {
+            String territoryDeparture = firstTerritory.getSelectedItem().toString();
+            String territoryArrival = secondTerritory.getSelectedItem().toString();
+            if (territoryDeparture.equals("Territoire de départ") | territoryArrival.equals("Territoire d'arrivé")){
+                JOptionPane.showMessageDialog(this, "Vous devez choisir le pays de départ et d'arrivé","Erreur pendant le déplacement",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            JOptionPane.showMessageDialog(this, "Déplacement effectuée","Déplacement de " + territoryDeparture + " à " + territoryArrival,JOptionPane.INFORMATION_MESSAGE);
+            movePanel.setVisible(false);
+            playingPanel.setVisible(true);
+        });
+
         //Ajouter les panels à la frame
         this.add(playingPanel);
         this.add(attackPanel);
@@ -254,10 +271,12 @@ public class MapPanel extends Panel {
         });
 
         //Action : quand le bouton DEPLACER est cliqué
-        move.addActionListener(e -> {
+        move.addActionListener(e ->{
             movePanel.setVisible(true);
             playingPanel.setVisible(false);
         });
+
+
     }
 
     private void victory(){
@@ -290,7 +309,40 @@ public class MapPanel extends Panel {
         getTerritories().forEach(t -> t.addToPanel(this));
     }
 
-    public MapPanel(RiskFrame currentFrame, List<Player> players) {
+    public void showMissions(ArrayList<Player> allplayers){
+
+        JFrame missionPlayer = new JFrame();
+        missionPlayer.setTitle("Missions des joueurs");
+        missionPlayer.setSize(500, 170 * allplayers.size());
+        missionPlayer.setLocationRelativeTo(null);
+        missionPlayer.setLayout(new GridLayout(allplayers.size()*3,1));
+
+        for (int i = 0; i < allplayers.size(); i++){
+            Player player = allplayers.get(i);
+            JButton showMission = new JButton("Montrer la mission de " + player.getName());
+            JButton hideMission = new JButton("Cacher la mission de " + player.getName());
+            showMission.setFont(font);
+            hideMission.setFont(font);
+            missionPlayer.setVisible(true);
+            JLabel mission = new JLabel("mission"); //TODO ajouter les missions
+            mission.setFont(font);
+            mission.setHorizontalAlignment(SwingConstants.CENTER);
+            mission.setVisible(false);
+            missionPlayer.add(showMission);
+            missionPlayer.add(mission);
+            missionPlayer.add(hideMission);
+            showMission.addActionListener(e -> {
+                mission.setVisible(true);
+            });
+            hideMission.addActionListener(e -> {
+                mission.setVisible(false);
+            });
+        }
+
+    }
+
+    public MapPanel(RiskFrame currentFrame, ArrayList<Player> players) {
+
         this.players = players;
 
         this.initBackgroundImage();
@@ -304,6 +356,9 @@ public class MapPanel extends Panel {
         this.setLayout(null);
 
         this.victory();
+
+        showMissions(players);
+
     }
 
     public Image getBackgroundImage() {
