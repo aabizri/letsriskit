@@ -17,4 +17,10 @@ public interface Mission {
 
         return this.getSubMissions().stream().allMatch(sm -> sm.isAchieved(player, board));
     }
+
+    default boolean isAvailable(@NotNull Game game) {
+        assert(game != null);
+
+        return true;
+    }
 }
