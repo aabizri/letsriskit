@@ -1,5 +1,7 @@
 package gui;
 
+import jdk.nashorn.internal.scripts.JO;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,23 +109,54 @@ public class MapPanel extends Panel {
         JComboBox attackedTerritory = new JComboBox(allCountriesAttacked);
         JButton validateAttack = new JButton("ATTAQUER");
         JButton cancelAttack = new JButton("ANNULER");
-        String[] soldats = {"Soldats","1","2","3"};
-        String[] canons = {"Canons","1","2","3"};
-        String[] cavaliers = {"Cavaliers","1","2","3"};
+        Integer[] soldats = {0,1,2,3};
+        Integer[] canons = {0,1,2,3};
+        Integer[] cavaliers = {0,1,2,3};
+        JLabel soldatsTag = new JLabel("Soldats");
+        JLabel canonsTag = new JLabel("Canons");
+        JLabel cavaliersTag = new JLabel("Cavaliers");
+        soldatsTag.setHorizontalAlignment(SwingConstants.CENTER);
+        canonsTag.setHorizontalAlignment(SwingConstants.CENTER);
+        cavaliersTag.setHorizontalAlignment(SwingConstants.CENTER);
         JComboBox soldatAttack = new JComboBox(soldats);
         JComboBox canonAttack = new JComboBox(canons);
         JComboBox cavalierAttack = new JComboBox(cavaliers);
+        attackPanel.setBackground(Color.WHITE);
         attackPanel.setBounds(1100,210,160,250);
-        attackPanel.setBackground(new Color(0,0,0,0));
         attackPanel.setVisible(false);
         attackPanel.add(attackingTerritory);
         attackPanel.add(attackedTerritory);
+        attackPanel.add(soldatsTag);
         attackPanel.add(soldatAttack);
+        attackPanel.add(canonsTag);
         attackPanel.add(canonAttack);
+        attackPanel.add(cavaliersTag);
         attackPanel.add(cavalierAttack);
         attackPanel.add(validateAttack);
         attackPanel.add(cancelAttack);
-        attackPanel.setLayout(new GridLayout(7,1));
+        attackPanel.setLayout(new GridLayout(10,1));
+
+        validateAttack.addActionListener(e -> {
+            int quantitySoldats = (int)soldatAttack.getSelectedItem();
+            int quantityCanons = (int)canonAttack.getSelectedItem();
+            int quantityCavaliers = (int)cavalierAttack.getSelectedItem();
+
+            if (quantityCanons + quantityCavaliers + quantitySoldats == 0){
+                JOptionPane.showMessageDialog(this,"Impossible d'attaquer avec 0 unité","Erreur pour attaquer",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (quantityCanons + quantityCavaliers + quantitySoldats > 3){
+                JOptionPane.showMessageDialog(this,"Interdit d'attaquer avec plus de trois unités","Erreur pour attaquer",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (attackingTerritory.getSelectedItem().equals("Pays attaquant") | attackedTerritory.getSelectedItem().equals("Pays attaqué") ){
+                JOptionPane.showMessageDialog(this,"Veuillez choisir un pays attaquant et un pays attaqué","Erreur pour attaquer",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            JOptionPane.showMessageDialog(this,"Attaque réussie","Attaque : " + attackingTerritory.getSelectedItem().toString() + " sur " + attackedTerritory.getSelectedItem().toString(),JOptionPane.INFORMATION_MESSAGE);
+
+        });
 
         cancelAttack.addActionListener(e -> {
             attackPanel.setVisible(false);
@@ -152,23 +185,38 @@ public class MapPanel extends Panel {
         JComboBox secondTerritory = new JComboBox(secondCountry);
         JButton validateMove = new JButton("DEPLACER");
         JButton cancelMove = new JButton("ANNULER");
-        String[] soldatsMovement = {"Soldats","1","2","3"};
-        String[] canonsMovement = {"Canons","1","2","3"};
-        String[] cavaliersMovement = {"Cavaliers","1","2","3"};
-        JComboBox soldatQuantity = new JComboBox(soldatsMovement);
-        JComboBox canonQuantity = new JComboBox(canonsMovement);
-        JComboBox cavalierQuantity = new JComboBox(cavaliersMovement);
+        JTextField soldatQuantity = new JTextField();
+        JTextField canonQuantity = new JTextField();
+        JTextField cavalierQuantity = new JTextField();
         movePanel.setBounds(1100,210,160,250);
-        movePanel.setBackground(new Color(0,0,0,0));
         movePanel.setVisible(false);
+        JLabel soldatsT = new JLabel("Soldats");
+        JLabel canonsT = new JLabel("Canons");
+        JLabel cavaliersT = new JLabel("Cavaliers");
+        soldatsT.setHorizontalAlignment(SwingConstants.CENTER);
+        canonsT.setHorizontalAlignment(SwingConstants.CENTER);
+        cavaliersT.setHorizontalAlignment(SwingConstants.CENTER);
         movePanel.add(firstTerritory);
         movePanel.add(secondTerritory);
+        movePanel.add(soldatsT);
         movePanel.add(soldatQuantity);
+        movePanel.add(canonsT);
         movePanel.add(canonQuantity);
+        movePanel.add(cavaliersT);
         movePanel.add(cavalierQuantity);
         movePanel.add(validateMove);
         movePanel.add(cancelMove);
-        movePanel.setLayout(new GridLayout(7,1));
+        movePanel.setLayout(new GridLayout(10,1));
+        movePanel.setBackground(Color.WHITE);
+
+        validateMove.addActionListener(e -> {
+            if (firstTerritory.getSelectedItem().equals("Territoire de départ") | secondTerritory.getSelectedItem().equals("Pays d'arrivé") ){
+                JOptionPane.showMessageDialog(this,"Veuillez choisir un pays de départ et un pays d'arrivé","Erreur pour déplacer des troupes",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            JOptionPane.showMessageDialog(this,"Déplacement réussi","Déplacement : " + firstTerritory.getSelectedItem().toString() + " vers " + secondTerritory.getSelectedItem().toString(),JOptionPane.INFORMATION_MESSAGE);
+        });
 
         cancelMove.addActionListener(e -> {
             movePanel.setVisible(false);
@@ -203,8 +251,38 @@ public class MapPanel extends Panel {
         getTerritories().forEach(t -> t.addToPanel(this));
     }
 
-    public MapPanel(RiskFrame currentFrame, List<Player> players) {
+    public void showMissions(ArrayList<Player> allPlayers){
+
+        JFrame missionPlayer = new JFrame();
+        missionPlayer.setTitle("Mission des joueurs");
+
+        for ( int i = 0; i < allPlayers.size(); i++ ){
+            JButton showMission = new JButton("Afficher la mission de " + allPlayers.get(i).getName().toString());
+            JLabel mission = new JLabel("mission");
+            mission.setVisible(false);
+            mission.setHorizontalAlignment(SwingConstants.CENTER);
+            JButton hideMission = new JButton("Cacher la mission de " + allPlayers.get(i).getName().toString());
+            missionPlayer.setVisible(true);
+            missionPlayer.setSize(500, 180*allPlayers.size());
+            missionPlayer.setLocationRelativeTo(null);
+            missionPlayer.add(showMission);
+            missionPlayer.add(mission);
+            missionPlayer.add(hideMission);
+            missionPlayer.setLayout(new GridLayout(allPlayers.size()*3,1));
+
+            showMission.addActionListener(e -> {
+                mission.setVisible(true);
+            });
+            hideMission.addActionListener(e -> {
+                mission.setVisible(false);
+            });
+        }
+    }
+
+    public MapPanel(RiskFrame currentFrame, ArrayList<Player> players) {
         this.players = players;
+
+        this.showMissions(players);
 
         this.initBackgroundImage();
 
