@@ -1,10 +1,14 @@
 package gui;
 
 import com.sun.xml.internal.bind.v2.TODO;
+import engine.Game;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class PlayerNamesPanel extends Panel {
     private RiskFrame parentFrame;
@@ -133,7 +137,9 @@ public class PlayerNamesPanel extends Panel {
 
                 allPlayers.add(new Player(name, IA, allCombos[i].getSelectedItem().toString()));
             }
-            parentFrame.setCurrentPanel(new MapPanel(parentFrame,allPlayers));
+            java.util.List<engine.Player> enginePlayers = allPlayers.stream().map(guiPlayer -> (engine.Player) guiPlayer).collect(Collectors.toList());
+            engine.Game game = new engine.Game(engine.World.realWorld.getRegions(), enginePlayers, new ArrayList<>(Collections.singletonList(Game.testMission)), engine.UnitType.basicSet);
+            parentFrame.setCurrentPanel(new MapPanel(game,parentFrame,allPlayers));
         });
 
         this.setLayout(new GridLayout(0, 4));

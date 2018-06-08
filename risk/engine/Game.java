@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Game {
+    public final static Mission testMission = new GenericMission("test",new ArrayList<>());
+
     // State
     private final static int STATE_NOT_STARTED = 0;
     private final static int STATE_PREPARING = 1;
@@ -116,21 +118,32 @@ public class Game {
         }
 
         // Branch 1: Allocating Missions
-        new Thread(() -> {
+        Thread t1 = new Thread(() -> {
             try {
                 allocateMissions(new Random());
-            } catch (GameStateException ignore) {
+            } catch (GameStateException e) {
+                e.printStackTrace();
             }
-        }).start();
+        });
+        t1.start();
 
         // Branch 2: Allocate Territories & Units
-        new Thread(() -> {
+        Thread t2 = new Thread(() -> {
             try {
                 this.allocateTerritories();
                 this.allocateUnits();
-            } catch (Exception ignore) {
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }).start();
+        });
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Atomic update
         ok = this.state.compareAndSet(STATE_PREPARING, STATE_PREPARING);
@@ -139,12 +152,12 @@ public class Game {
         }
     }
 
-    private boolean hasNextTurn() {
+    public boolean hasNextTurn() {
         // TODO: Check for victory conditions / time exceeded / etc.
         return false;
     }
 
-    private @NotNull Optional<Turn> getNextTurn() {
+    public @NotNull Optional<Turn> getNextTurn() {
         boolean ok = this.state.compareAndSet(STATE_STARTED, STATE_PLAYING);
         if (!ok) {
             return Optional.empty();

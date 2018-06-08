@@ -1,5 +1,7 @@
 package gui;
 
+import engine.GameStateException;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,57 +12,85 @@ import javax.swing.*;
 
 public class MapPanel extends Panel {
 
+    private engine.Game game;
     private List<Player> players;
     private Font font = new Font("Times Roman", Font.BOLD, 15);
     final Collection<Territory> territories = new ArrayList<>(42);
 
-    private Collection<Territory> getTerritories(){
-        territories.add(new Territory("Eastern Australia",1088,629));
-        territories.add(new Territory("Western Australia",986,642));
-        territories.add(new Territory("New Guinea",1038,505));
-        territories.add(new Territory("Indonesia",938,525));
-        territories.add(new Territory("Japan",1043,255));
-        territories.add(new Territory("Siam",929,412));
-        territories.add(new Territory("Kamchatka",1019,92));
-        territories.add(new Territory("India",827,382));
-        territories.add(new Territory("China",898,318));
-        territories.add(new Territory("Mongolia",932,247));
-        territories.add(new Territory("Irkutsk",919,178));
-        territories.add(new Territory("Yakutsk",927,85));
-        territories.add(new Territory("Siberia",848,121));
-        territories.add(new Territory("Ural",777,170));
-        territories.add(new Territory("Afghanistan",757,273));
-        territories.add(new Territory("Middle East",683, 381));
-        territories.add(new Territory("Ukraine",657, 194));
-        territories.add(new Territory("Scandinavia",564, 130));
-        territories.add(new Territory("Northern Europe",554, 244));
-        territories.add(new Territory("Southern Europe",568, 308));
-        territories.add(new Territory("Western Europe",475, 325));
-        territories.add(new Territory("Iceland",471, 142));
-        territories.add(new Territory("Great Britain",450, 224));
-        territories.add(new Territory("Eastern Africa",667, 509));
-        territories.add(new Territory("Madagascar",716, 645));
-        territories.add(new Territory("South Africa",608, 633));
-        territories.add(new Territory("Congo",601, 549));
-        territories.add(new Territory("Egypt",606, 423));
-        territories.add(new Territory("Northern Africa",516, 456));
-        territories.add(new Territory("Argentina",277, 603));
-        territories.add(new Territory("Brazil",334, 478));
-        territories.add(new Territory("Peru",231, 494));
-        territories.add(new Territory("Venezuela",251, 408));
-        territories.add(new Territory("Greenland",384, 64));
-        territories.add(new Territory("Quebec",306, 184));
-        territories.add(new Territory("Ontario",231, 176));
-        territories.add(new Territory("Eastern United States",240, 275));
-        territories.add(new Territory("Central America",174, 350));
-        territories.add(new Territory("Western United States",155, 253));
-        territories.add(new Territory("North West Territory",173, 112));
-        territories.add(new Territory("Alberta",159, 168));
-        territories.add(new Territory("Alaska",58, 112));
+
+    public MapPanel(engine.Game game, RiskFrame currentFrame, List<Player> players) {
+        this.game = game;
+
+        this.players = players;
+
+        this.prepare();
+
+        this.initBackgroundImage();
+
+        this.initWorldTerritories();
+
+        this.initColor();
+
+        this.playingButtons();
+
+        this.setLayout(null);
+    }
+
+    private void prepare() {
+        try {
+            this.game.prepare();
+        } catch (GameStateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Collection<Territory> getTerritories() throws Exception {
+        territories.add(new Territory(game,"Eastern Australia",1088,629));
+        territories.add(new Territory(game,"Western Australia",986,642));
+        territories.add(new Territory(game,"New Guinea",1038,505));
+        territories.add(new Territory(game,"Indonesia",938,525));
+        territories.add(new Territory(game,"Japan",1043,255));
+        territories.add(new Territory(game,"Siam",929,412));
+        territories.add(new Territory(game,"Kamchatka",1019,92));
+        territories.add(new Territory(game,"India",827,382));
+        territories.add(new Territory(game,"China",898,318));
+        territories.add(new Territory(game,"Mongolia",932,247));
+        territories.add(new Territory(game,"Irkutsk",919,178));
+        territories.add(new Territory(game,"Yakutsk",927,85));
+        territories.add(new Territory(game,"Siberia",848,121));
+        territories.add(new Territory(game,"Ural",777,170));
+        territories.add(new Territory(game,"Afghanistan",757,273));
+        territories.add(new Territory(game,"Middle East",683, 381));
+        territories.add(new Territory(game,"Ukraine",657, 194));
+        territories.add(new Territory(game,"Scandinavia",564, 130));
+        territories.add(new Territory(game,"Northern Europe",554, 244));
+        territories.add(new Territory(game,"Southern Europe",568, 308));
+        territories.add(new Territory(game,"Western Europe",475, 325));
+        territories.add(new Territory(game,"Iceland",471, 142));
+        territories.add(new Territory(game,"Great Britain",450, 224));
+        territories.add(new Territory(game,"East Africa",667, 509));
+        territories.add(new Territory(game,"Madagascar",716, 645));
+        territories.add(new Territory(game,"South Africa",608, 633));
+        territories.add(new Territory(game,"Congo",601, 549));
+        territories.add(new Territory(game,"Egypt",606, 423));
+        territories.add(new Territory(game,"North Africa",516, 456));
+        territories.add(new Territory(game,"Argentina",277, 603));
+        territories.add(new Territory(game,"Brazil",334, 478));
+        territories.add(new Territory(game,"Peru",231, 494));
+        territories.add(new Territory(game,"Venezuela",251, 408));
+        territories.add(new Territory(game,"Greenland",384, 64));
+        territories.add(new Territory(game,"Quebec",306, 184));
+        territories.add(new Territory(game,"Ontario",231, 176));
+        territories.add(new Territory(game,"Eastern United States",240, 275));
+        territories.add(new Territory(game,"Central America",174, 350));
+        territories.add(new Territory(game,"Western United States",155, 253));
+        territories.add(new Territory(game,"North West Territory",173, 112));
+        territories.add(new Territory(game,"Alberta",159, 168));
+        territories.add(new Territory(game,"Alaska",58, 112));
         return territories;
     }
 
-    private void initColor(){ getTerritories().forEach(t -> t.ColorButton()); }
+    private void initColor(){ territories.forEach(t -> t.ColorButton()); }
     private void initializeTroups(){
         JButton troups = new JButton("Poser des troupes");
     }
@@ -93,14 +123,14 @@ public class MapPanel extends Panel {
 
         String[] allCountriesAttacking = {"Pays attaquant","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
                 "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
-                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
-                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
+                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","East Africa","Madagascar",
+                "South Africa","Congo","Egypt","North Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
                 "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
         };
         String[] allCountriesAttacked = {"Pays attaqué","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
                 "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
-                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
-                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
+                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","East Africa","Madagascar",
+                "South Africa","Congo","Egypt","North Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
                 "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
         };
         JComboBox attackingTerritory = new JComboBox(allCountriesAttacking);
@@ -138,14 +168,14 @@ public class MapPanel extends Panel {
 
         String[] firstCountry = {"Territoire de départ","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
                 "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
-                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
-                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
+                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","East Africa","Madagascar",
+                "South Africa","Congo","Egypt","North Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
                 "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
         };
         String[] secondCountry = {"Territoire d'arrivé","Eastern Australia","Western Australia","New Guinea","Indonesia","Japan","Siam","Kamchatka",
                 "India","China","Mongolia","Irkutsk","Yakutsk","Siberia","Ural","Afghanistan","Middle East","Ukraine","Scandinavia",
-                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","Eastern Africa","Madagascar",
-                "South Africa","Congo","Egypt","Northern Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
+                "Northern Europe", "Southern Europe","Western Europe","Iceland","Great Britain","East Africa","Madagascar",
+                "South Africa","Congo","Egypt","North Africa","Argentina","Brazil","Peru","Venezuela","Greenland","Quebec",
                 "Ontario","Eastern United States","Central America","Western United States","North West Territory","Alberta","Alaska"
         };
         JComboBox firstTerritory = new JComboBox(firstCountry);
@@ -200,25 +230,15 @@ public class MapPanel extends Panel {
     }
 
     private void initWorldTerritories() {
-        getTerritories().forEach(t -> t.addToPanel(this));
-    }
-
-    public MapPanel(RiskFrame currentFrame, List<Player> players) {
-        this.players = players;
-
-        this.initBackgroundImage();
-
-        this.initWorldTerritories();
-
-        this.initColor();
-
-        this.playingButtons();
-
-        this.setLayout(null);
+        try {
+            getTerritories().forEach(t -> t.addToPanel(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Image getBackgroundImage() {
-        return (new ImageIcon("risk/gui/ressources/world.jpg")).getImage().getScaledInstance(1280, 715, Image.SCALE_DEFAULT);
+        return (new ImageIcon("gui/ressources/world.jpg")).getImage().getScaledInstance(1280, 715, Image.SCALE_DEFAULT);
     }
 
     private void initBackgroundImage() {

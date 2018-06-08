@@ -54,6 +54,8 @@ public class World {
             e.printStackTrace();
             return;
         }
-        World.unmarshal(fileReader);
+        World world = World.unmarshal(fileReader);
+        world.getRegions().forEach(r -> System.out.println(r.getName()));
+        world.getRegions().stream().flatMap(r -> r.getTerritories().stream()).forEach(t -> System.out.println(t.getName()));
     }
 }

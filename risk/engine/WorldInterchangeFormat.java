@@ -74,6 +74,6 @@ public class WorldInterchangeFormat {
 
         World world = new World(this.name, finalRegions);
 
-        return null;
+        return world;
     }
 }

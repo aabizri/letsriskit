@@ -5,17 +5,31 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
+import java.util.Optional;
 
 
 public class Territory {
     private static final int BUTTON_WIDTH = 20;
 
+    engine.Game game;
+    engine.Territory inner;
+
     String name;
     JButton button;
 
-    Territory(final String name, final int x, final int y){
+    Territory(engine.Game game, String name, final int x, final int y) throws Exception {
+        this.game = game;
         this.button = newButton(x,y,BUTTON_WIDTH);
         this.name = name;
+        this.findInner();
+    }
+
+    private void findInner() throws Exception {
+        Optional<engine.Territory> potentialInner = this.game.getBoard().getTerritories().stream().filter(t -> t.getName().equals(this.name)).findAny();
+        if (!potentialInner.isPresent()) {
+            throw new Exception("Error: incoherence as we couldn't find an engine.Territory matching the territory : " + this.name);
+        }
+        inner = potentialInner.get();
     }
 
     public String getName() {
@@ -28,10 +42,31 @@ public class Territory {
 
     public void ColorButton(){
         JButton button = this.getButton();
-        button.setBackground(Color.BLUE);
+        Color color = Color.cyan;
+        if (this.inner.getOwner().isPresent()) {
+            switch (((Player) this.inner.getOwner().get()).getCouleur()) {
+                case "Bleu":
+                    color = Color.blue;
+                    break;
+                case "Jaune":
+                    color = Color.yellow;
+                    break;
+                case "Rouge":
+                    color = Color.red;
+                    break;
+                case "Vert":
+                    color = Color.green;
+                    break;
+                case "Rose":
+                    color = Color.magenta;
+                    break;
+                case "Noir":
+                    color = Color.black;
+                    break;
+            }
+        }
+        button.setBackground(color);
     }
-
-
 
     public void getTerritoryFrame(JButton b){
         Territory territory = this;
@@ -135,12 +170,10 @@ public class Territory {
 
     //private void JButton newButton(final int x, final int y) {return Territory.newButton(x,y,BUTTON_WIDTH);}
 
-    private JButton newButton(final int x, final int y, final int width){
+    private JButton newButton(final int x, final int y, final int width) {
         final JButton territoryButton = new JButton();
-        territoryButton.setBounds(x,y,width,width);
+        territoryButton.setBounds(x, y, width, width);
         this.getTerritoryFrame(territoryButton);
         return territoryButton;
     }
-
-
 }
