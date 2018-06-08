@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class PlayerNamesPanel extends Panel {
     private RiskFrame parentFrame;
 
+    private Color finalColor;
     private JButton back = new JButton("<");
     private JButton next = new JButton(">");
     private Font font = new Font("Times Roman", Font.BOLD, 30);
@@ -105,27 +106,49 @@ public class PlayerNamesPanel extends Panel {
             for (int i = 0; i < numberOfPlayers; i++) {
                 if (IACheckbox[i].isSelected()){
                     IA = true;
-                } IA = false;
+                }
+                else {
+                    IA = false;
+                }
 
                 if (names[i].getText().isEmpty()){
                     JOptionPane.showMessageDialog(this,"Chaque joueur doit avoir un nom","Erreur de nom",JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                for (int j = 0; j < numberOfPlayers; j++){
-                    for (int k = j+1; k < numberOfPlayers; k++) {
+                for (int j = 0; j < numberOfPlayers-1; j++){
+                    for (int k = j+1; k < numberOfPlayers-1; k++) {
                         if (allCombos[j].getSelectedItem() == allCombos[k].getSelectedItem()) {
                             JOptionPane.showMessageDialog(this,"Chaque joueur doit avoir une couleur différente","Erreur de couleur",JOptionPane.ERROR_MESSAGE);
                             return;
                         }
                         if (names[j].equals(names[k])){
-                            JOptionPane.showMessageDialog(this,"Le même nom ne peut être utilisé plusieurs fois","Erreur de nom",JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(this,"Le même nom ne peut pas être utilisé plusieurs fois","Erreur de nom",JOptionPane.ERROR_MESSAGE);
                             return;
                         }
                     }
                 }
                 name = names[i].getText();
-                allPlayers.add(new Player(name, IA, allCombos[i].getSelectedItem().toString()));
+                if (allCombos[i].getSelectedItem().toString().equals("Bleu")){
+                    finalColor = Color.BLUE;
+                }
+                if (allCombos[i].getSelectedItem().toString().equals("Jaune")){
+                    finalColor = Color.YELLOW;
+                }
+                if (allCombos[i].getSelectedItem().toString().equals("Rouge")){
+                    finalColor = Color.RED;
+                }
+                if (allCombos[i].getSelectedItem().toString().equals("Vert")){
+                    finalColor = Color.GREEN;
+                }
+                if (allCombos[i].getSelectedItem().toString().equals("Blanc")){
+                    finalColor = Color.WHITE;
+                }
+                if (allCombos[i].getSelectedItem().toString().equals("Noir")){
+                    finalColor = Color.black;
+                }
+
+                allPlayers.add(new Player(name, IA, finalColor ));
             }
             parentFrame.setCurrentPanel(new MapPanel(parentFrame,allPlayers));
         });

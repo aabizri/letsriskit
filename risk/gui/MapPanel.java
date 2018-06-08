@@ -62,7 +62,10 @@ public class MapPanel extends Panel {
         return territories;
     }
 
-    private void initColor(){ getTerritories().forEach(t -> t.ColorButton()); }
+    private void initColor(){
+        getTerritories().forEach(t -> t.ColorButton(((ArrayList<Player>)players)));
+    }
+
     private void initializeTroups(){
         JButton troups = new JButton("Poser des troupes");
     }

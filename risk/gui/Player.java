@@ -1,12 +1,14 @@
 package gui;
 
+import java.awt.*;
+
 public class Player {
 
     private String name;
     private Boolean IA;
-    private String couleur;
+    private Color couleur;
 
-    public Player(String name, Boolean IA, String couleur){
+    public Player(String name, Boolean IA, Color couleur){
         this.name = name;
         this.IA = IA;
         this.couleur = couleur;
@@ -20,5 +22,5 @@ public class Player {
         return IA;
     }
 
-    public String getCouleur() { return couleur; }
+    public Color getCouleur() { return couleur; }
 }

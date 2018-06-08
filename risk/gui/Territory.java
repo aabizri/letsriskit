@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 
 
 public class Territory {
@@ -26,12 +28,11 @@ public class Territory {
         return button;
     }
 
-    public void ColorButton(){
+    public void ColorButton(ArrayList <Player> playersInfos){
         JButton button = this.getButton();
-        button.setBackground(Color.BLUE);
+        button.setBackground(playersInfos.get(0).getCouleur());
+        
     }
-
-
 
     public void getTerritoryFrame(JButton b){
         Territory territory = this;
@@ -48,10 +49,10 @@ public class Territory {
                 JButton exit = new JButton();
                 JButton manageTroups = new JButton();
                 JLabel territoryName = new JLabel(territory.getName());
-                JLabel soldier = new JLabel("Soldat : 2");
-                JLabel cavalier = new JLabel("Cavalier : 0");
-                JLabel canon = new JLabel("Canon :1" );
-                JLabel occupant = new JLabel("L'occupant est player1");
+                JLabel soldier = new JLabel("Soldat : ");
+                JLabel cavalier = new JLabel("Cavalier : ");
+                JLabel canon = new JLabel("Canon : " );
+                JLabel occupant = new JLabel("L'occupant est ");
                 territoryInformation.add(territoryName);
                 territoryInformation.add(occupant);
                 territoryInformation.add(soldier);
